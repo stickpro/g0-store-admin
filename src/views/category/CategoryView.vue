@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { h, onMounted, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+import type { ColumnDef } from '@tanstack/vue-table'
+
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -18,16 +23,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Switch } from '@/components/ui/switch'
-import type { ColumnDef } from '@tanstack/vue-table'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { File, ListFilter, PlusCircle } from 'lucide-vue-next'
 import { useCategoryStore } from '@/stores/category'
-import { h, onMounted, ref, watch } from 'vue'
-import { storeToRefs } from 'pinia'
+
 import DataTable from '@/components/data-table/DataTable.vue'
 import DataTableColumnHeader from '@/components/data-table/DataTableColumnHeader.vue'
-import { useRouter } from 'vue-router'
 import DataTableRowActions from '@/components/data-table/DataTableRowActions.vue'
 import type { ICategoryRequest } from '@/utils/types/api/apiGo.ts'
 
@@ -35,6 +37,11 @@ const { categories, isLoading } = storeToRefs(useCategoryStore())
 const { getCategories } = useCategoryStore()
 
 const router = useRouter()
+
+const params = ref({
+  page: 1,
+  pageSize: 10,
+})
 
 const columns: ColumnDef[] = [
   {
@@ -80,23 +87,18 @@ const columns: ColumnDef[] = [
   },
   {
     id: 'actions',
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Actions' }),
-
-    cell: ({ row }) => h(DataTableRowActions, { row }),
+    header: ({ column }) =>
+      h(DataTableColumnHeader, { column, title: 'Actions', class: 'text-right' }),
+    cell: ({ row }) => h(DataTableRowActions, { row, class: 'text-right' }),
   },
 ]
 
-const page = ref(1)
-const pageSize = ref(10)
-
-
-
 const fetchCategories = async () => {
-  const payload: ICategoryRequest = { page: page.value, page_size: pageSize.value }
+  const payload: ICategoryRequest = { page: params.value.page, page_size: params.value.pageSize }
   await getCategories(payload)
 }
 
-watch([page, pageSize], fetchCategories, { immediate: true })
+watch(params.value, fetchCategories, { immediate: true })
 
 onMounted(async () => {
   await fetchCategories
@@ -149,14 +151,12 @@ onMounted(async () => {
           </CardHeader>
           <CardContent>
             <DataTable
-              v-if="categories"
+              v-model:page="params.page"
+              v-model:page-size="params.pageSize"
               :columns="columns"
-              :data="categories?.items"
-              :page="categories?.pagination?.page"
-              :pageSize="categories?.pagination?.page_size"
-              :total="categories?.pagination?.total"
-              @update:page="(newPage) => page = newPage"
-              @update:pageSize="(newSize) => pageSize = newSize"
+              :is-loading="isLoading"
+              :data="categories?.items ?? []"
+              :total-items="categories?.pagination.total ?? 0"
             />
           </CardContent>
           <CardFooter>
