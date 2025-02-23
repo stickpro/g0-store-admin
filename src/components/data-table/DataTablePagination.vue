@@ -1,96 +1,94 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="TData">
 import type { Table } from '@tanstack/vue-table'
-import { Button } from '@/components/ui/button'
+import {
+  Pagination,
+  PaginationFirst,
+  PaginationLast,
+  PaginationList,
+  PaginationNext,
+  PaginationPrev,
+} from '@/components/ui/pagination'
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
-} from '@radix-icons/vue'
+import { computed } from 'vue'
 
-interface DataTablePaginationProps {
-  table: Table<unknown>
+interface Props {
+  table: Table<TData>
+  pageSizeOptions: number[]
 }
 
-defineProps<DataTablePaginationProps>()
-const emit = defineEmits(['update:page', 'update:pageSize'])
+const props = defineProps<Props>()
 
-const handlePageChange = (newPage: number) => {
-  emit('update:page', newPage)
-}
+const pageSize = defineModel<number>('pageSize', { required: true })
+const pageSizeStr = computed<string>({
+  get: () => pageSize.value.toString(),
+  set: value => pageSize.value = Number(value),
+})
 
-const handlePageSizeChange = (newSize: number) => {
-  emit('update:pageSize', newSize)
-}
+const currentPage = computed(() => props.table.getState().pagination.pageIndex + 1)
+const totalPages = computed(() => props.table.getPageCount())
+const totalItems = computed(() => props.table.getRowCount())
+const recordRange = computed(() => {
+  const from = (currentPage.value - 1) * pageSize.value + 1
+  const to = Math.min(currentPage.value * pageSize.value, totalItems.value)
+  return `${from} - ${to} of ${totalItems.value}`
+})
 </script>
 
 <template>
-  <div class="flex items-center justify-between px-2">
-    <div class="flex-1 text-sm text-muted-foreground">
-      {{ table.getFilteredSelectedRowModel().rows.length }} of
-      {{ table.getFilteredRowModel().rows.length }} row(s) selected.
-    </div>
-    <div class="flex items-center space-x-6 lg:space-x-8">
-      <div class="flex items-center space-x-2">
-        <p class="text-sm font-medium">Rows per page</p>
-        <Select
-          :model-value="`${table.getState().pagination.pageSize}`"
-          @update:model-value="handlePageSizeChange"
-        >
-          <SelectTrigger class="h-8 w-[70px]">
-            <SelectValue :placeholder="`${table.getState().pagination.pageSize}`" />
-          </SelectTrigger>
-          <SelectContent side="top">
-            <SelectItem v-for="size in [10, 20, 30, 40, 50]" :key="size" :value="`${size}`">
-              {{ size }}
+  <div class="flex ml-auto space-x-6">
+    <div class="flex items-center gap-1">
+      <span class="text-sm sr-only sm:not-sr-only">
+        Items per page:
+      </span>
+      <Select v-model="pageSizeStr">
+        <SelectTrigger class="w-20">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem
+              v-for="option in props.pageSizeOptions"
+              :key="option"
+              :value="option.toString()"
+            >
+              {{ option }}
             </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div class="flex w-[100px] items-center justify-center text-sm font-medium">
-        Page {{ table.getState().pagination.pageIndex }} of {{ table.getPageCount() }}
-      </div>
-      <div class="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          class="hidden h-8 w-8 p-0 lg:flex"
-          :disabled="!table.getCanPreviousPage()"
-          @click="handlePageChange(1)"
-        >
-          <DoubleArrowLeftIcon class="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          class="h-8 w-8 p-0"
-          :disabled="!table.getCanPreviousPage()"
-          @click="handlePageChange(table.getState().pagination.pageIndex)"
-        >
-          <ChevronLeftIcon class="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          class="h-8 w-8 p-0"
-          :disabled="!table.getCanNextPage()"
-          @click="handlePageChange(table.getState().pagination.pageIndex + 2)"
-        >
-          <ChevronRightIcon class="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          class="hidden h-8 w-8 p-0 lg:flex"
-          :disabled="!table.getCanNextPage()"
-          @click="handlePageChange(table.getPageCount())"
-        >
-          <DoubleArrowRightIcon class="h-4 w-4" />
-        </Button>
-      </div>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <span class="text-sm">
+        {{ recordRange }}
+      </span>
+      <Pagination>
+        <PaginationList class="flex items-center gap-1">
+          <PaginationFirst
+            :disabled="!props.table.getCanPreviousPage()"
+            @click="props.table.setPageIndex(0)"
+          />
+          <PaginationPrev
+            :disabled="!props.table.getCanPreviousPage()"
+            @click="props.table.previousPage()"
+          />
+          <PaginationNext
+            :disabled="!props.table.getCanNextPage()"
+            @click="props.table.nextPage()"
+          />
+          <PaginationLast
+            :disabled="!props.table.getCanNextPage()"
+            @click="props.table.setPageIndex(totalPages - 1)"
+          />
+        </PaginationList>
+      </Pagination>
     </div>
   </div>
 </template>

@@ -1,21 +1,6 @@
-<script setup lang="ts">
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-} from '@tanstack/vue-table'
-import {
-  FlexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
-  useVueTable,
-} from '@tanstack/vue-table'
-
+<script setup lang="ts" generic="TData, TValue, TSort extends string">
+import type { SortPrefix } from '@/lib/sort'
+import type { ColumnDef, SortingState } from '@tanstack/vue-table'
 import {
   Table,
   TableBody,
@@ -24,83 +9,72 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { utils } from '@/utils/utils'
-import { computed, ref } from 'vue'
+import { convertParamsToSorting, convertSortingToParams } from '@/lib/sort'
+import {
+  FlexRender,
+  getCoreRowModel,
+  useVueTable,
+} from '@tanstack/vue-table'
+import { computed } from 'vue'
+import { LoaderCircleIcon } from 'lucide-vue-next'
 import DataTablePagination from './DataTablePagination.vue'
 
-interface DataTableProps {
-  columns: ColumnDef<Task, any>[]
-  data: []
-  page: number
-  pageSize: number
-  total: number
+interface Props {
+  isLoading: boolean
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+  totalItems: number
+  pageSizeOptions?: number[]
+  sorts?: SortPrefix<TSort>[]
 }
+const props = withDefaults(defineProps<Props>(), {
+  pageSizeOptions: () => [10, 20, 30],
+  sorts: () => [],
+})
 
-const props = defineProps<DataTableProps>()
+const emit = defineEmits<{
+  (e: 'sorts', sorts: SortPrefix<TSort>[]): void
+}>()
 
-const sorting = ref<SortingState>([])
-const columnFilters = ref<ColumnFiltersState>([])
-const columnVisibility = ref<VisibilityState>({})
-const rowSelection = ref({})
+const page = defineModel<number>('page', { required: true })
+const pageSize = defineModel<number>('pageSize', { required: true })
 
-const getPageCount = () => Math.ceil(props.total / props.pageSize)
-
-const emit = defineEmits(['update:page', 'update:pageSize'])
-
-const handlePageChange = (newPage: number) => {
-  emit('update:page', newPage)
-}
-
-const handlePageSize = (newPageSize: number) => {
-  emit('update:pageSize', newPageSize)
-}
+const sorting = computed<SortingState>({
+  get: () => convertParamsToSorting(props.sorts ?? []),
+  set: value => emit('sorts', convertSortingToParams(value)),
+})
 
 const table = useVueTable({
-  get data() {
-    return props.data
-  },
-  get columns() {
-    return props.columns
-  },
+  get data() { return props.data },
+  get columns() { return props.columns },
+  get rowCount() { return props.totalItems },
   state: {
-    get sorting() {
-      return sorting.value
-    },
-    get columnFilters() {
-      return columnFilters.value
-    },
-    get columnVisibility() {
-      return columnVisibility.value
-    },
-    get rowSelection() {
-      return rowSelection.value
-    },
-    get pagination() {
-      return { pageIndex: props.page, pageSize: props.pageSize }
-    },
+    get pagination() { return { pageIndex: page.value - 1, pageSize: pageSize.value } },
+    get sorting() { return sorting.value },
   },
-  enableRowSelection: true,
-  manualPagination: true,
-  pageCount: getPageCount(),
   getCoreRowModel: getCoreRowModel(),
-  onSortingChange: (updaterOrValue) => utils(updaterOrValue, sorting),
-  onColumnFiltersChange: (updaterOrValue) => utils(updaterOrValue, columnFilters),
-  onColumnVisibilityChange: (updaterOrValue) => utils(updaterOrValue, columnVisibility),
-  onRowSelectionChange: (updaterOrValue) => utils(updaterOrValue, rowSelection),
-  getCoreRowModel: getCoreRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getFacetedRowModel: getFacetedRowModel(),
-  getFacetedUniqueValues: getFacetedUniqueValues(),
 
+  // Server-side pagination
+  manualPagination: true,
+  onPaginationChange: (updaterOrValue) => {
+    const newState = typeof updaterOrValue === 'function'
+      ? updaterOrValue(table.getState().pagination)
+      : updaterOrValue
+
+    page.value = newState.pageIndex + 1
+    pageSize.value = newState.pageSize
+  },
+
+  // Server-side sorting
+  enableMultiSort: false,
 })
 </script>
 
 <template>
-  <div class="space-y-4">
-    <div class="rounded-md border">
+  <div class="flex flex-col justify-end pb-1 space-y-4">
+    <div class="h-full overflow-y-auto border rounded-md">
       <Table>
-        <TableHeader>
+        <TableHeader class="bg-muted-foreground/10">
           <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
               <FlexRender
@@ -112,28 +86,49 @@ const table = useVueTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          <template v-if="table.getRowModel().rows?.length">
+          <template v-if="props.isLoading">
+            <TableRow>
+              <TableCell
+                :colspan="columns.length"
+                class="relative h-24"
+              >
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <LoaderCircleIcon
+                    class="w-8 h-8 animate-spin text-primary"
+                    aria-label="Loading..."
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          </template>
+          <template v-else-if="table.getRowModel().rows?.length">
             <TableRow
               v-for="row in table.getRowModel().rows"
               :key="row.id"
-              :data-state="row.getIsSelected() && 'selected'"
+              :data-state="row.getIsSelected() ? 'selected' : 'undefined'"
             >
               <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
                 <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
               </TableCell>
             </TableRow>
           </template>
-
-          <TableRow v-else>
-            <TableCell :colspan="columns.length" class="h-24 text-center"> No results.</TableCell>
-          </TableRow>
+          <template v-else>
+            <TableRow>
+              <TableCell :colspan="columns.length" class="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          </template>
         </TableBody>
       </Table>
     </div>
+
     <DataTablePagination
+      v-if="!props.isLoading"
+      v-model:page-size="pageSize"
+      :total-items="props.totalItems ?? 0"
+      :page-size-options="props.pageSizeOptions"
       :table="table"
-      @update:page="handlePageChange"
-      @update:pageSize="handlePageSize"
     />
   </div>
 </template>
