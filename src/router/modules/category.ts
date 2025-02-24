@@ -22,4 +22,14 @@ export default [
       breadcrumb: "Category"
     },
   },
+  {
+    path: '/category/:id/edit',
+    name: 'edit-create',
+    component: () => import('@/views/category/EditCategoryView.vue'),
+    meta: {
+      layout: APP_LAYOUT.DEFAULT,
+      middleware: [auth],
+      breadcrumb: "Category"
+    },
+  },
 ]

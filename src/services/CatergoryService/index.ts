@@ -8,8 +8,13 @@ export default class CategoryService {
     return data
   }
 
-  public static async createCategory(payload: CreateCategoryRequest): Promise<CategoryResponse> {
+  public static async createApiCategory(payload: CreateCategoryRequest): Promise<CategoryResponse> {
     const { data } = await api.post('/category', payload)
+    return data
+  }
+
+  public static async getApiCategoryById(uuid: string): Promise<CategoryResponse> {
+    const { data } = await api.get(`/category/id/${uuid}`)
     return data
   }
 }
