@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils.ts'
 
 interface DataTableRowActionsProps {
   row: Row<[]>
+  editUrlName: string
 }
 
 const props = defineProps<DataTableRowActionsProps>()
@@ -29,7 +30,10 @@ const props = defineProps<DataTableRowActionsProps>()
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" class="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <RouterLink :to="{ name: props.editUrlName, params: { id: row.original.id } }">
+          <DropdownMenuItem>Edit</DropdownMenuItem>
+        </RouterLink>
+
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
