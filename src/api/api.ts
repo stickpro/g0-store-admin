@@ -105,6 +105,18 @@ export default class Api {
     });
   }
 
+  public put<D, R>(
+    url: string,
+    data: Partial<D> | null = null,
+    options: FetchOptions<"json"> = {},
+  ) {
+    return this.request<D, R>(url, {
+      ...options,
+      method: 'PUT',
+      body: data,
+    });
+  }
+
   public delete<D, R>(
     url: string,
     data: Partial<D> | null = null,

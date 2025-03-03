@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { CategoryResponse, CreateCategoryRequest } from '@/utils/types/api/generatedApiGo'
+import type { CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest } from '@/utils/types/api/generatedApiGo'
 import CategoryService from '@/services/CatergoryService'
 import type { ICategoriesResponse } from '@/utils/types/api/apiGo.ts'
-import { currentCategoryStartData } from '@/stores/category/utils'
+import { useToast } from '@/components/ui/toast/use-toast'
 
 const defaultDataCategories: ICategoriesResponse = {
   items: [],
@@ -17,8 +17,8 @@ const defaultDataCategories: ICategoriesResponse = {
 export const useCategoryStore = defineStore('category', () => {
   const isLoading = ref<boolean>(true)
   const categories = ref<ICategoriesResponse>(defaultDataCategories)
-  const currentCategory = ref<CategoryResponse>(structuredClone(currentCategoryStartData));
-
+  const currentCategory = ref<CategoryResponse | null>(null);
+  const { toast } = useToast()
 
   const getCategories = async (payload: ICate) => {
     try {
@@ -47,6 +47,25 @@ export const useCategoryStore = defineStore('category', () => {
     try {
       isLoading.value = true
       await CategoryService.createApiCategory(request)
+      toast({
+        title: '✅ Success create',
+      })
+    } catch (error: any) {
+      throw error
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const updateCategory = async () => {
+    try {
+      isLoading.value = true
+      await CategoryService.updateApiCategoryById(currentCategory.value.id, currentCategory.value)
+      toast({
+        title: '✅ Success update',
+        variant: 'success',
+
+      })
     } catch (error: any) {
       throw error
     } finally {
@@ -60,6 +79,7 @@ export const useCategoryStore = defineStore('category', () => {
     getCategories,
     getCategoryById,
     createCategory,
+    updateCategory,
     currentCategory
   }
 })
