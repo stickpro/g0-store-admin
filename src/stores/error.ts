@@ -20,7 +20,7 @@ export const useErrorStore = defineStore('error', {
     },
     setErrors(errors: Record<string, string[]>) {
       Object.entries(errors).forEach(([key, value]) => {
-        this.errors[key] = value[0]
+        this.errors[value.field] = value.message
       })
     },
     clearError(name: string) {
