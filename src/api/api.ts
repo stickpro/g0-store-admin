@@ -13,8 +13,8 @@ const baseConfig: FetchOptions = {
   async onResponseError({request, response, options}) {
     if (response?.status === 422) {
       const message = response._data.message
-      console.log(response._data)
       useErrorStore().setErrors(response._data.errors)
+      console.error(response._data)
       throw new CustomError(message, response.status);
     }
 
@@ -26,7 +26,7 @@ const baseConfig: FetchOptions = {
 }
 export default class Api {
   private accessToken: Token;
-  private accessTokenProvider: () => Token;
+  private readonly accessTokenProvider: () => Token;
 
   private readonly fetchInstance: $Fetch;
 

@@ -42,6 +42,7 @@ export interface CategoryResponse {
   meta_keywords?: string
   meta_title?: string
   name?: string
+  parent_id?: string
   slug?: string
   updated_at?: string
 }

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest } from '@/utils/types/api/generatedApiGo'
 import CategoryService from '@/services/CatergoryService'
-import type { ICategoriesResponse } from '@/utils/types/api/apiGo.ts'
+import type { ICategoriesResponse, ICategoryRequest } from '@/utils/types/api/apiGo.ts'
 import { useToast } from '@/components/ui/toast/use-toast'
 
 const defaultDataCategories: ICategoriesResponse = {
@@ -20,7 +20,7 @@ export const useCategoryStore = defineStore('category', () => {
   const currentCategory = ref<CategoryResponse | null>(null);
   const { toast } = useToast()
 
-  const getCategories = async (payload: ICate) => {
+  const getCategories = async (payload: ICategoryRequest) => {
     try {
       isLoading.value = false
       categories.value = await CategoryService.getApiCategories(payload)
