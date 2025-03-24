@@ -23,6 +23,4 @@ export default class CategoryService {
     const { data } = await api.put(`/category/${uuid}`, payload)
     return data
   }
-
-
 }

@@ -7,7 +7,6 @@ import {USER} from "@/utils/constants/user";
 const baseConfig: FetchOptions = {
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
-    'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
   async onResponseError({request, response, options}) {
@@ -20,7 +19,7 @@ const baseConfig: FetchOptions = {
 
     if (response?.status === 401) {
       localStorage.removeItem('api_token');
-      window.location.replace(import.meta.env.VITE_AUTH_URL)
+      window.location.replace("/")
     }
   }
 }
@@ -126,6 +125,21 @@ export default class Api {
       ...options,
       method: 'DELETE',
       body: data,
+    });
+  }
+
+  public uploadFile<R>(
+    url: string,
+    data: FormData,
+    options: FetchOptions<"json"> = {},
+  ): Promise<R> {
+    return this.request<FormData, R>(url, {
+      ...options,
+      method: "POST",
+      body: data,
+      headers: {
+        ...options.headers,
+      },
     });
   }
 

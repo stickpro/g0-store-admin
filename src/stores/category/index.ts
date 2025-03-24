@@ -64,7 +64,6 @@ export const useCategoryStore = defineStore('category', () => {
       toast({
         title: '✅ Success update',
         variant: 'success',
-
       })
     } catch (error: any) {
       throw error

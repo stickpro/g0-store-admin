@@ -13,5 +13,6 @@ app.use(createPinia())
 app.use(router)
 
 app.config.globalProperties.$appFrontend = import.meta.env.VITE_FRONTEND_URL;
+app.config.globalProperties.$fileStorageUrl = import.meta.env.VITE_FILE_STORAGE_URL;
 
 intiRequests().then(() => app.mount('#app'))

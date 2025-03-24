@@ -36,6 +36,7 @@ export interface CategoryResponse {
   created_at?: string
   description?: string
   id?: string
+  image_path?: string
   is_enabled?: boolean
   meta_description?: string
   meta_h1?: string
@@ -50,6 +51,8 @@ export interface CategoryResponse {
 export interface CreateCategoryRequest {
   /** @minLength 1 */
   description?: string
+  /** @minLength 1 */
+  image_path?: string
   is_enabled?: boolean
   /** @minLength 1 */
   meta_description?: string
@@ -122,6 +125,12 @@ export interface JSONResponseCategoryResponse {
   message?: string
 }
 
+export interface JSONResponseMediumResponse {
+  code?: number
+  data?: MediumResponse
+  message?: string
+}
+
 export interface JSONResponseProductResponse {
   code?: number
   data?: ProductResponse
@@ -150,6 +159,17 @@ export interface JSONResponseUserInfoResponse {
   code?: number
   data?: UserInfoResponse
   message?: string
+}
+
+export interface MediumResponse {
+  created_at?: string
+  disk_type?: string
+  file_name?: string
+  id?: string
+  mime_type?: string
+  name?: string
+  path?: string
+  size?: number
 }
 
 export interface ProductResponse {
@@ -216,6 +236,8 @@ export interface ResponseWithFullPaginationGithubComStickproGoStoreInternalStora
 export interface UpdateCategoryRequest {
   /** @minLength 1 */
   description?: string
+  /** @minLength 1 */
+  image_path?: string
   is_enabled?: boolean
   /** @minLength 1 */
   meta_description?: string
@@ -295,6 +317,7 @@ export interface GithubComStickproGoStoreInternalStorageRepositoryRepositoryCate
   created_at?: PgtypeTimestamp
   description?: PgtypeText
   id?: string
+  image_path?: PgtypeText
   is_enable?: boolean
   meta_description?: PgtypeText
   meta_h1?: PgtypeText
