@@ -1,4 +1,4 @@
-import type { CategoryResponse } from '@/utils/types/api/generatedApiGo'
+import type { CategoryResponse, CollectionResponse } from '@/utils/types/api/generatedApiGo'
 
 
 export interface ICategoryRequest {
@@ -7,7 +7,7 @@ export interface ICategoryRequest {
 }
 
 
-export interface ICategoryPagination {
+export interface IPagination {
   last_page: number;
   page: number;
   page_size: number;
@@ -15,5 +15,15 @@ export interface ICategoryPagination {
 }
 export interface ICategoriesResponse {
   items: CategoryResponse[];
-  pagination: ICategoryPagination;
+  pagination: IPagination;
+}
+
+export interface ICollectionRequest {
+  page: number
+  page_size: number
+}
+
+export interface ICollectionResponse {
+  items: CollectionResponse[];
+  pagination: IPagination
 }

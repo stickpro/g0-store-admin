@@ -203,7 +203,7 @@
 </template>
 
 <script setup lang="ts">
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { storeToRefs } from "pinia";
 import {
   Breadcrumb,
@@ -256,6 +256,7 @@ import {
   Frame,
   GalleryVerticalEnd,
   LogOut,
+  Library,
   Map,
   MoreHorizontal,
   PieChart,
@@ -292,6 +293,17 @@ const data = {
         {
           title: 'Categories',
           url: '/category',
+        },
+      ],
+    },
+    {
+      title: 'Collections',
+      url: '#',
+      icon: Library,
+      items: [
+        {
+          title: 'Collections',
+          url: '/collection',
         },
       ],
     },

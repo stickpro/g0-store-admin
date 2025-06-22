@@ -11,61 +11,86 @@ const defaultDataCategories: ICategoriesResponse = {
     page: 1,
     page_size: 10,
     total: 100,
+    last_page: 1,
   }
 }
 
 export const useCategoryStore = defineStore('category', () => {
-  const isLoading = ref<boolean>(true)
+  const isLoading = ref<boolean>(false)
   const categories = ref<ICategoriesResponse>(defaultDataCategories)
-  const currentCategory = ref<CategoryResponse | null>(null);
+  const currentCategory = ref<CategoryResponse | null>(null)
   const { toast } = useToast()
 
-  const getCategories = async (payload: ICategoryRequest) => {
+  const getCategories = async (payload: ICategoryRequest): Promise<void> => {
     try {
-      isLoading.value = false
+      isLoading.value = true
       categories.value = await CategoryService.getApiCategories(payload)
     } catch (error: any) {
+      toast({
+        title: 'Error fetching categories',
+        description: error.message || 'An error occurred while fetching categories',
+        variant: 'destructive',
+      })
       throw error
     } finally {
       isLoading.value = false
     }
   }
 
-  const getCategoryById = async (uuid: string) => {
+  const getCategoryById = async (uuid: string): Promise<void> => {
     try {
       isLoading.value = true
       currentCategory.value = await CategoryService.getApiCategoryById(uuid)
     } catch (error: any) {
+      toast({
+        title: 'Error fetching category',
+        description: error.message || 'An error occurred while fetching the category',
+        variant: 'destructive',
+      })
       throw error
     } finally {
       isLoading.value = false
     }
   }
 
-
-  const createCategory = async (request: CreateCategoryRequest) => {
+  const createCategory = async (request: CreateCategoryRequest): Promise<void> => {
     try {
       isLoading.value = true
       await CategoryService.createApiCategory(request)
       toast({
         title: '✅ Success create',
+        variant: 'success',
       })
     } catch (error: any) {
+      toast({
+        title: 'Error creating category',
+        description: error.message || 'An error occurred while creating the category',
+        variant: 'destructive',
+      })
       throw error
     } finally {
       isLoading.value = false
     }
   }
 
-  const updateCategory = async () => {
+  const updateCategory = async (request: UpdateCategoryRequest): Promise<void> => {
+    if (!currentCategory.value?.id) {
+      throw new Error('No category selected for update')
+    }
+
     try {
       isLoading.value = true
-      await CategoryService.updateApiCategoryById(currentCategory.value.id, currentCategory.value)
+      await CategoryService.updateApiCategoryById(currentCategory.value.id, request)
       toast({
         title: '✅ Success update',
         variant: 'success',
       })
     } catch (error: any) {
+      toast({
+        title: 'Error updating category',
+        description: error.message || 'An error occurred while updating the category',
+        variant: 'destructive',
+      })
       throw error
     } finally {
       isLoading.value = false
@@ -75,10 +100,10 @@ export const useCategoryStore = defineStore('category', () => {
   return {
     isLoading,
     categories,
+    currentCategory,
     getCategories,
     getCategoryById,
     createCategory,
     updateCategory,
-    currentCategory
   }
 })

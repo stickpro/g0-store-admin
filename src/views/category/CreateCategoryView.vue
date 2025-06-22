@@ -18,8 +18,8 @@ const categoryInfo = ref<CreateCategoryRequest>({
   name: '',
   slug: '',
   description: '',
-  parent_id: null as string | null,
-  image_path: null as string | null,
+  parent_id: undefined,
+  image_path: undefined,
   meta_title: '',
   meta_h1: '',
   meta_keyword: '',
@@ -44,7 +44,7 @@ const loadFile = async () => {
   return await MediaService.uploadFile(files.value[0])
 }
 
-const handleFilesChange = (newFiles) => {
+const handleFilesChange = (newFiles: any) => {
   files.value = newFiles
 }
 </script>

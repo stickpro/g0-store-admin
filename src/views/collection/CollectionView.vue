@@ -1,40 +1,28 @@
 <script setup lang="ts">
-import { h, onMounted, ref, watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
-import type { ColumnDef } from '@tanstack/vue-table'
-
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Switch } from '@/components/ui/switch'
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { File, ListFilter, PlusCircle } from 'lucide-vue-next'
-import { useCategoryStore } from '@/stores/category'
 
 import DataTable from '@/components/data-table/DataTable.vue'
+import {
+  DropdownMenu, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { File, ListFilter, PlusCircle } from 'lucide-vue-next'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { storeToRefs } from 'pinia'
+import { useCollectionStore } from '@/stores/collection'
+import type { ColumnDef } from '@tanstack/vue-table'
+import { h, onMounted, ref, watch } from 'vue'
+import { Checkbox } from '@/components/ui/checkbox'
 import DataTableColumnHeader from '@/components/data-table/DataTableColumnHeader.vue'
 import DataTableRowActions from '@/components/data-table/DataTableRowActions.vue'
-import type { ICategoryRequest } from '@/utils/types/api/apiGo.ts'
+import { useRouter } from 'vue-router'
+import type { ICollectionRequest } from '@/utils/types/api/apiGo.ts'
 
-const { categories, isLoading } = storeToRefs(useCategoryStore())
-const { getCategories } = useCategoryStore()
+const { collections, isLoading } = storeToRefs(useCollectionStore())
+const { getCollections } = useCollectionStore()
 
 const router = useRouter()
 
@@ -77,15 +65,6 @@ const columns: ColumnDef<any>[] = [
     cell: ({ row }) => h('div', { class: 'w-20' }, row.getValue('slug')),
   },
   {
-    accessorKey: 'is_enable',
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Status' }),
-    cell: ({ row }) =>
-      h(Switch, {
-        checked: row.getValue('is_enable'),
-        'onUpdate:checked': (value) => row.toggleSelected(!!value),
-      }),
-  },
-  {
     id: 'actions',
     header: ({ column }) =>
       h(DataTableColumnHeader, { column, title: 'Actions', class: 'text-right' }),
@@ -93,17 +72,22 @@ const columns: ColumnDef<any>[] = [
   },
 ]
 
-const fetchCategories = async () => {
-  const payload: ICategoryRequest = { page: params.value.page, page_size: params.value.pageSize }
-  await getCategories(payload)
+const fetchCollections = async () => {
+  const payload: ICollectionRequest = { page: params.value.page, page_size: params.value.pageSize }
+  await getCollections(payload)
 }
 
-watch(params.value, fetchCategories, { immediate: true })
+watch(params.value, fetchCollections, { immediate: true })
 
 onMounted( async () => {
-  await fetchCategories()
+  await fetchCollections()
 })
 </script>
+
+<style scoped>
+
+</style>
+
 
 <template>
   <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -135,18 +119,18 @@ onMounted( async () => {
             <File class="h-3.5 w-3.5" />
             <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Export </span>
           </Button>
-          <Button size="sm" class="h-7 gap-1" @click="router.push({ name: 'category-create' })">
+          <Button size="sm" class="h-7 gap-1" @click="router.push({ name: 'collection-create' })">
             <PlusCircle class="h-3.5 w-3.5" />
-            <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Add Category </span>
+            <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Add Collection </span>
           </Button>
         </div>
       </div>
       <TabsContent value="all">
         <Card>
           <CardHeader>
-            <CardTitle>Categories</CardTitle>
+            <CardTitle>Collections</CardTitle>
             <CardDescription>
-              Manage your Category and view their sales performance.
+              Manage your Collection and view their sales performance.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -155,13 +139,13 @@ onMounted( async () => {
               v-model:page-size="params.pageSize"
               :columns="columns"
               :is-loading="isLoading"
-              :data="categories?.items ?? []"
-              :total-items="categories?.pagination.total ?? 0"
+              :data="collections?.items ?? []"
+              :total-items="collections?.pagination.total ?? 0"
             />
           </CardContent>
           <CardFooter>
             <div class="text-xs text-muted-foreground">
-              Showing <strong>1-10</strong> of <strong>{{ categories?.pagination?.total }}</strong>
+              Showing <strong>1-10</strong> of <strong>{{ collections?.pagination?.total }}</strong>
               products
             </div>
           </CardFooter>

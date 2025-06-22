@@ -4,43 +4,105 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { CornerUpLeft, PlusCircle, Trash2 } from 'lucide-vue-next'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCategoryStore } from '@/stores/category'
 import CategoryForm from '@/components/category/CategoryForm.vue'
 import MetaInformationForm from '@/components/category/CategoryMetaForm.vue'
 import { FileUpload, FileUploadGrid } from '@/components/ui/file-upload'
 import MediaService from '@/services/MediaService'
+import type { MediumResponse, UpdateCategoryRequest } from '@/utils/types/api/generatedApiGo'
+import { useToast } from '@/components/ui/toast/use-toast'
 
-const { getCategoryById, updateCategory } = useCategoryStore()
-const { currentCategory } = storeToRefs(useCategoryStore())
-const files = ref([])
-
+// Инициализация хранилища, роутера и toast
+const categoryStore = useCategoryStore()
+const { getCategoryById, updateCategory } = categoryStore
+const { currentCategory } = storeToRefs(categoryStore)
 const route = useRoute()
-const uuid = route.params.id
+const router = useRouter()
+const { toast } = useToast()
 
+// Типизация файлов
+const files = ref<File[]>([])
+
+// Получение UUID из параметров маршрута
+const uuid = typeof route.params.id === 'string' ? route.params.id : ''
+
+// Базовый URL для хранения файлов (замените на вашу реализацию)
+const fileStorageUrl = import.meta.env.VITE_FILE_STORAGE_URL || 'http://localhost:3000/storage/'
+
+// Загрузка категории при монтировании компонента
 onMounted(async () => {
-  await getCategoryById(uuid)
+  if (uuid) {
+    try {
+      await getCategoryById(uuid)
+    } catch (error: any) {
+      toast({
+        title: 'Ошибка загрузки категории',
+        description: error.message || 'Не удалось загрузить данные категории',
+        variant: 'destructive',
+      })
+    }
+  } else {
+    toast({
+      title: 'Ошибка',
+      description: 'Идентификатор категории не указан',
+      variant: 'destructive',
+    })
+    router.push({ name: 'category' })
+  }
 })
 
-const handleFilesChange = (newFiles) => {
+// Обработка изменения файлов
+const handleFilesChange = (newFiles: File[]) => {
   files.value = newFiles
 }
+
+// Удаление изображения
 const removeImage = () => {
-  currentCategory.value.image_path = null
+  if (currentCategory.value) {
+    currentCategory.value.image_path = undefined
+  }
 }
 
-const loadFile = async () => {
+// Загрузка файла
+const loadFile = async (): Promise<MediumResponse> => {
+  if (!files.value[0]) {
+    throw new Error('Файл не выбран')
+  }
   return await MediaService.uploadFile(files.value[0])
 }
 
+// Обновление категории с загрузкой изображения
 const updateWithUpload = async () => {
+  if (!currentCategory.value?.id) {
+    throw new Error('Category not selected')
+  }
   try {
-    const file = await loadFile()
-    currentCategory.value.image_path = file.path
-    await updateCategory()
+    // Подготовка данных для обновления
+    const updateRequest: UpdateCategoryRequest = {
+      ...currentCategory.value,
+      image_path: currentCategory.value.image_path || undefined,
+    }
+
+    // Загрузка нового изображения, если выбрано
+    if (files.value.length > 0) {
+      const file = await loadFile()
+      updateRequest.image_path = file.path
+    }
+
+    // Обновление категории
+    await updateCategory(updateRequest)
+    toast({
+      title: '✅ Категория обновлена',
+      variant: 'success',
+    })
     await router.push({ name: 'category' })
-  } catch (error) {
-    console.error(error)
+  } catch (error: any) {
+    toast({
+      title: 'Ошибка обновления категории',
+      description: error.message || 'Не удалось обновить категорию',
+      variant: 'destructive',
+    })
   }
 }
 </script>
@@ -58,12 +120,12 @@ const updateWithUpload = async () => {
           <CornerUpLeft class="h-3.5 w-3.5" />
         </Button>
         <span class="text-2xl font-semibold sr-only sm:not-sr-only sm:whitespace-nowrap">
-          New category
+          Редактирование категории
         </span>
       </div>
       <Button size="sm" class="h-7 gap-1" @click="updateWithUpload">
         <PlusCircle class="h-3.5 w-3.5" />
-        <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Update </span>
+        <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Обновить </span>
       </Button>
     </div>
   </div>
@@ -71,7 +133,7 @@ const updateWithUpload = async () => {
     <div class="col-span-2 space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Category Info</CardTitle>
+          <CardTitle>Информация о категории</CardTitle>
         </CardHeader>
         <CardContent>
           <CategoryForm v-if="currentCategory" v-model="currentCategory" />
@@ -79,24 +141,24 @@ const updateWithUpload = async () => {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Meta information</CardTitle>
+          <CardTitle>Мета-информация</CardTitle>
         </CardHeader>
         <CardContent>
-          <MetaInformationForm v-model="currentCategory" v-if="currentCategory" />
+          <MetaInformationForm v-if="currentCategory" v-model="currentCategory" />
         </CardContent>
       </Card>
     </div>
     <div>
       <Card>
         <CardHeader>
-          <CardTitle>Image Category</CardTitle>
+          <CardTitle>Изображение категории</CardTitle>
         </CardHeader>
         <CardContent>
           <div v-if="currentCategory?.image_path" class="relative w-full flex justify-center">
             <div class="relative">
               <img
-                :src="$fileStorageUrl + currentCategory.image_path"
-                alt="Category Image"
+                :src="fileStorageUrl + currentCategory.image_path"
+                alt="Изображение категории"
                 class="h-52 w-52 rounded-md object-cover border"
               />
               <Button

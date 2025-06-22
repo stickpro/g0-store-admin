@@ -19,6 +19,14 @@ export interface APIErrors {
   errors?: APIError[]
 }
 
+export interface AttributeGroupResponse {
+  created_at?: string
+  description?: string
+  id?: string
+  name?: string
+  updated_at?: string
+}
+
 export interface AuthRequest {
   email: string
   /**
@@ -48,6 +56,43 @@ export interface CategoryResponse {
   updated_at?: string
 }
 
+export interface CityResponse {
+  address?: string
+  area?: string
+  area_type?: string
+  capital_marker?: number
+  city?: string
+  city_type?: string
+  country?: string
+  federal_district?: string
+  fias_id?: string
+  fias_level?: number
+  foundation_year?: number
+  geo_lat?: number
+  geo_lon?: number
+  id?: string
+  kladr_id?: string
+  okato?: string
+  oktmo?: string
+  population?: number
+  postal_code?: string
+  region?: string
+  region_type?: string
+  settlement?: string
+  settlement_type?: string
+  tax_office?: string
+  timezone?: string
+}
+
+export interface CollectionResponse {
+  created_at?: string
+  description?: string
+  id?: string
+  name?: string
+  slug?: string
+  updated_at?: string
+}
+
 export interface CreateCategoryRequest {
   /** @minLength 1 */
   description?: string
@@ -68,6 +113,39 @@ export interface CreateCategoryRequest {
    */
   name: string
   parent_id?: string
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  slug: string
+}
+
+export interface CreateCollectionRequest {
+  /** @maxLength 500 */
+  description?: string
+  name: string
+  slug: string
+}
+
+export interface CreateManufacturerRequest {
+  /** @minLength 1 */
+  description?: string
+  /** @minLength 1 */
+  image_path?: string
+  is_enabled?: boolean
+  /** @minLength 1 */
+  meta_description?: string
+  /** @minLength 1 */
+  meta_h1?: string
+  /** @minLength 1 */
+  meta_keyword?: string
+  /** @minLength 1 */
+  meta_title?: string
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string
   /**
    * @minLength 1
    * @maxLength 255
@@ -113,6 +191,16 @@ export interface FullPagingData {
   total?: number
 }
 
+export interface GeoResponse {
+  city?: string
+}
+
+export interface JSONResponseAttributeGroupResponse {
+  code?: number
+  data?: AttributeGroupResponse
+  message?: string
+}
+
 export interface JSONResponseAuthResponse {
   code?: number
   data?: AuthResponse
@@ -122,6 +210,30 @@ export interface JSONResponseAuthResponse {
 export interface JSONResponseCategoryResponse {
   code?: number
   data?: CategoryResponse
+  message?: string
+}
+
+export interface JSONResponseCityResponse {
+  code?: number
+  data?: CityResponse
+  message?: string
+}
+
+export interface JSONResponseCollectionResponse {
+  code?: number
+  data?: CollectionResponse
+  message?: string
+}
+
+export interface JSONResponseGeoResponse {
+  code?: number
+  data?: GeoResponse
+  message?: string
+}
+
+export interface JSONResponseManufacturerResponse {
+  code?: number
+  data?: ManufacturerResponse
   message?: string
 }
 
@@ -143,9 +255,15 @@ export interface JSONResponseRegisterUserResponse {
   message?: string
 }
 
-export interface JSONResponseResponseWithFullPaginationGithubComStickproGoStoreInternalStorageRepositoryRepositoryCategoriesFindRow {
+export interface JSONResponseResponseWithFullPaginationGithubComStickproGoStoreInternalModelsCategory {
   code?: number
-  data?: ResponseWithFullPaginationGithubComStickproGoStoreInternalStorageRepositoryRepositoryCategoriesFindRow
+  data?: ResponseWithFullPaginationGithubComStickproGoStoreInternalModelsCategory
+  message?: string
+}
+
+export interface JSONResponseResponseWithFullPaginationGithubComStickproGoStoreInternalModelsCollection {
+  code?: number
+  data?: ResponseWithFullPaginationGithubComStickproGoStoreInternalModelsCollection
   message?: string
 }
 
@@ -159,6 +277,27 @@ export interface JSONResponseUserInfoResponse {
   code?: number
   data?: UserInfoResponse
   message?: string
+}
+
+export interface JSONResponseArrayGithubComStickproGoStoreInternalModelsCity {
+  code?: number
+  data?: GithubComStickproGoStoreInternalModelsCity[]
+  message?: string
+}
+
+export interface ManufacturerResponse {
+  created_at?: string
+  description?: string
+  id?: string
+  image_path?: string
+  is_enabled?: boolean
+  meta_description?: string
+  meta_h1?: string
+  meta_keywords?: string
+  meta_title?: string
+  name?: string
+  slug?: string
+  updated_at?: string
 }
 
 export interface MediumResponse {
@@ -223,8 +362,13 @@ export interface RegisterUserResponse {
   token?: string
 }
 
-export interface ResponseWithFullPaginationGithubComStickproGoStoreInternalStorageRepositoryRepositoryCategoriesFindRow {
-  items?: GithubComStickproGoStoreInternalStorageRepositoryRepositoryCategoriesFindRow[]
+export interface ResponseWithFullPaginationGithubComStickproGoStoreInternalModelsCategory {
+  items?: GithubComStickproGoStoreInternalModelsCategory[]
+  pagination?: FullPagingData
+}
+
+export interface ResponseWithFullPaginationGithubComStickproGoStoreInternalModelsCollection {
+  items?: GithubComStickproGoStoreInternalModelsCollection[]
   pagination?: FullPagingData
 }
 
@@ -253,6 +397,39 @@ export interface UpdateCategoryRequest {
    */
   name?: string
   parent_id?: string
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  slug?: string
+}
+
+export interface UpdateCollectionRequest {
+  /** @maxLength 500 */
+  description?: string
+  name: string
+  slug: string
+}
+
+export interface UpdateManufacturerRequest {
+  /** @minLength 1 */
+  description?: string
+  /** @minLength 1 */
+  image_path?: string
+  is_enabled?: boolean
+  /** @minLength 1 */
+  meta_description?: string
+  /** @minLength 1 */
+  meta_h1?: string
+  /** @minLength 1 */
+  meta_keyword?: string
+  /** @minLength 1 */
+  meta_title?: string
+  /**
+   * @minLength 1
+   * @maxLength 255
+   */
+  name?: string
   /**
    * @minLength 1
    * @maxLength 255
@@ -313,7 +490,16 @@ export enum GithubComStickproGoStoreInternalConstantStockStatus {
   OutOfStock = 'OUT_OF_STOCK',
 }
 
-export interface GithubComStickproGoStoreInternalStorageRepositoryRepositoryCategoriesFindRow {
+export interface GithubComStickproGoStoreInternalDeliveryHttpRequestAttributeRequestCreateAttributeGroupRequest {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  description?: string
+  name: string
+}
+
+export interface GithubComStickproGoStoreInternalModelsCategory {
   created_at?: PgtypeTimestamp
   description?: PgtypeText
   id?: string
@@ -327,6 +513,43 @@ export interface GithubComStickproGoStoreInternalStorageRepositoryRepositoryCate
   parent_id?: UuidNullUUID
   slug?: string
   updated_at?: PgtypeTimestamp
+}
+
+export interface GithubComStickproGoStoreInternalModelsCity {
+  address?: string
+  area?: PgtypeText
+  area_type?: PgtypeText
+  capital_marker?: number
+  city?: string
+  city_type?: string
+  country?: string
+  federal_district?: string
+  fias_id?: string
+  fias_level?: number
+  foundation_year?: number
+  geo_lat?: number
+  geo_lon?: number
+  id?: string
+  kladr_id?: string
+  okato?: string
+  oktmo?: string
+  population?: number
+  postal_code?: string
+  region?: string
+  region_type?: string
+  settlement?: PgtypeText
+  settlement_type?: PgtypeText
+  tax_office?: string
+  timezone?: string
+}
+
+export interface GithubComStickproGoStoreInternalModelsCollection {
+  created_at?: PgtypeTimestamptz
+  description?: PgtypeText
+  id?: string
+  name?: string
+  slug?: string
+  updated_at?: PgtypeTimestamptz
 }
 
 export interface GithubComStickproGoStoreInternalStorageRepositoryRepositoryProductsFindRow {
@@ -378,6 +601,12 @@ export interface PgtypeText {
 export interface PgtypeTimestamp {
   infinityModifier?: PgtypeInfinityModifier
   /** Time zone will be ignored when encoding to PostgreSQL. */
+  time?: string
+  valid?: boolean
+}
+
+export interface PgtypeTimestamptz {
+  infinityModifier?: PgtypeInfinityModifier
   time?: string
   valid?: boolean
 }
