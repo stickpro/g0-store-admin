@@ -9,7 +9,7 @@ export default [
     meta: {
       layout: APP_LAYOUT.DEFAULT,
       middleware: [auth],
-      breadcrumb: "Category"
+      breadcrumb: 'Category',
     },
   },
   {
@@ -19,7 +19,7 @@ export default [
     meta: {
       layout: APP_LAYOUT.DEFAULT,
       middleware: [auth],
-      breadcrumb: "Category"
+      breadcrumb: 'Category',
     },
   },
   {
@@ -29,7 +29,7 @@ export default [
     meta: {
       layout: APP_LAYOUT.DEFAULT,
       middleware: [auth],
-      breadcrumb: "Category"
+      breadcrumb: 'Category',
     },
   },
 ]

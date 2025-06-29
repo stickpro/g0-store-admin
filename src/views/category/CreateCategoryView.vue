@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { CornerUpLeft, PlusCircle } from 'lucide-vue-next'
+
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCategoryStore } from '@/stores/category'
+
 import CategoryForm from '@/components/category/CategoryForm.vue'
 import MetaInformationForm from '@/components/category/CategoryMetaForm.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CornerUpLeft, PlusCircle } from 'lucide-vue-next'
-import type { CreateCategoryRequest } from '@/utils/types/api/generatedApiGo'
 import { FileUpload, FileUploadGrid } from '@/components/ui/file-upload'
 import MediaService from '@/services/MediaService'
+import { useCategoryStore } from '@/stores/category'
+import type { CreateCategoryRequest } from '@/utils/types/api/generatedApiGo'
 
 const router = useRouter()
 const { createCategory } = useCategoryStore()

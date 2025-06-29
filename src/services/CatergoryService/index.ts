@@ -1,13 +1,16 @@
 import { api } from '@/api/Api'
 import type { ICategoriesResponse, ICategoryRequest } from '@/utils/types/api/apiGo.ts'
-import type { CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest } from '@/utils/types/api/generatedApiGo'
+import type {
+  CategoryResponse,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from '@/utils/types/api/generatedApiGo'
 
 export default class CategoryService {
   public static async getApiCategories(payload: ICategoryRequest): Promise<ICategoriesResponse> {
     const { data }: any = await api.get('/category', payload)
     return data
   }
-
 
   public static async getApiCategoryById(uuid: string): Promise<CategoryResponse> {
     const { data }: any = await api.get(`/category/id/${uuid}`)
@@ -19,7 +22,10 @@ export default class CategoryService {
     return data
   }
 
-  public static async updateApiCategoryById(uuid: string, payload: UpdateCategoryRequest): Promise<CategoryResponse> {
+  public static async updateApiCategoryById(
+    uuid: string,
+    payload: UpdateCategoryRequest,
+  ): Promise<CategoryResponse> {
     const { data }: any = await api.put(`/category/${uuid}`, payload)
     return data
   }

@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
+
 import { ref } from 'vue'
-import type { ICollectionRequest, ICollectionResponse } from '@/utils/types/api/apiGo.ts'
+
 import { useToast } from '@/components/ui/toast'
 import CollectionService from '@/services/CollectionService'
+import type { ICollectionRequest, ICollectionResponse } from '@/utils/types/api/apiGo.ts'
 import type {
   CollectionResponse,
   CreateCollectionRequest,
-  UpdateCollectionRequest
+  UpdateCollectionRequest,
 } from '@/utils/types/api/generatedApiGo'
 
-
-export const useCollectionStore = defineStore('collection', ()  => {
+export const useCollectionStore = defineStore('collection', () => {
   const isLoading = ref<boolean>(true)
   const collections = ref<ICollectionResponse | null>(null)
   const currentCollection = ref<CollectionResponse | null>(null)
@@ -100,5 +101,4 @@ export const useCollectionStore = defineStore('collection', ()  => {
     getCollections,
     getCollectionById,
   }
-
 })

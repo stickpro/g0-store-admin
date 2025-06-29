@@ -42,11 +42,14 @@
             class="relative z-40 mx-auto gap-1 flex w-full flex-row items-start justify-start overflow-hidden rounded-md bg-white p-4 shadow-sm dark:bg-neutral-900"
           >
             <div v-if="file.type.startsWith('image/')" class="mb-2">
-              <img :src="getFilePreview(file)" class="h-32 w-32 rounded-md object-cover"  alt="image"/>
+              <img
+                :src="getFilePreview(file)"
+                class="h-32 w-32 rounded-md object-cover"
+                alt="image"
+              />
             </div>
             <div>
               <div class="flex w-full items-center justify-between gap-4">
-
                 <Motion
                   as="p"
                   :initial="{ opacity: 0 }"
@@ -87,7 +90,6 @@
                 </Motion>
               </div>
             </div>
-
           </Motion>
 
           <template v-if="!files.length">
@@ -139,11 +141,13 @@
 </template>
 
 <script lang="ts" setup>
+import { Trash2 } from 'lucide-vue-next'
+import { Motion } from 'motion-v'
+
 import type { HTMLAttributes } from 'vue'
 import { ref } from 'vue'
+
 import { cn } from '@/lib/utils'
-import { Motion } from 'motion-v'
-import { Trash2 } from 'lucide-vue-next'
 
 interface FileUploadProps {
   class?: HTMLAttributes['class']

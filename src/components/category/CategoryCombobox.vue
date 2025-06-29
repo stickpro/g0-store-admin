@@ -1,10 +1,22 @@
 <script setup lang="ts">
-import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger } from '@/components/ui/combobox'
-import { Button } from '@/components/ui/button'
-import { ChevronsUpDown, Check } from 'lucide-vue-next'
-import { ref, watchEffect } from 'vue'
-import { useCategoryStore } from '@/stores/category'
+import { Check, ChevronsUpDown } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
+
+import { ref, watchEffect } from 'vue'
+
+import { Button } from '@/components/ui/button'
+import {
+  Combobox,
+  ComboboxAnchor,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxList,
+  ComboboxTrigger,
+} from '@/components/ui/combobox'
+import { useCategoryStore } from '@/stores/category'
 
 const { getCategories } = useCategoryStore()
 const { categories } = storeToRefs(useCategoryStore())

@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+import Toaster from '@/components/ui/toast/Toaster.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import { useRoute } from 'vue-router'
-import Toaster from '@/components/ui/toast/Toaster.vue'
 
-const route = useRoute();
+const route = useRoute()
 
 const layouts: Record<LayoutNames, Component> = {
-  "auth-layout": AuthLayout,
-  "default-layout": DefaultLayout,
-};
+  'auth-layout': AuthLayout,
+  'default-layout': DefaultLayout,
+}
 const resolveLayout = computed(() => {
-  return layouts[route.meta.layout as keyof typeof layouts];
-});
+  return layouts[route.meta.layout as keyof typeof layouts]
+})
 </script>
 
 <template>
@@ -22,4 +23,3 @@ const resolveLayout = computed(() => {
   </component>
   <Toaster />
 </template>
-

@@ -1,5 +1,1 @@
-
-
-<template>
-  dashboard
-</template>
+<template>dashboard</template>

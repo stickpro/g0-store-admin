@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia'
+
 import { ref } from 'vue'
-import type { CategoryResponse, CreateCategoryRequest, UpdateCategoryRequest } from '@/utils/types/api/generatedApiGo'
+
+import { useToast } from '@/components/ui/toast/use-toast'
 import CategoryService from '@/services/CatergoryService'
 import type { ICategoriesResponse, ICategoryRequest } from '@/utils/types/api/apiGo.ts'
-import { useToast } from '@/components/ui/toast/use-toast'
+import type {
+  CategoryResponse,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from '@/utils/types/api/generatedApiGo'
 
 const defaultDataCategories: ICategoriesResponse = {
   items: [],
@@ -12,7 +18,7 @@ const defaultDataCategories: ICategoriesResponse = {
     page_size: 10,
     total: 100,
     last_page: 1,
-  }
+  },
 }
 
 export const useCategoryStore = defineStore('category', () => {

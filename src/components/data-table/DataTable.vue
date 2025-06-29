@@ -1,6 +1,10 @@
 <script setup lang="ts" generic="TData, TValue, TSort extends string">
-import type { SortPrefix } from '@/lib/sort'
 import type { ColumnDef, SortingState } from '@tanstack/vue-table'
+import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
+import { LoaderCircleIcon } from 'lucide-vue-next'
+
+import { computed } from 'vue'
+
 import {
   Table,
   TableBody,
@@ -9,14 +13,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import type { SortPrefix } from '@/lib/sort'
 import { convertParamsToSorting, convertSortingToParams } from '@/lib/sort'
-import {
-  FlexRender,
-  getCoreRowModel,
-  useVueTable,
-} from '@tanstack/vue-table'
-import { computed } from 'vue'
-import { LoaderCircleIcon } from 'lucide-vue-next'
+
 import DataTablePagination from './DataTablePagination.vue'
 
 interface Props {
@@ -41,25 +40,36 @@ const pageSize = defineModel<number>('pageSize', { required: true })
 
 const sorting = computed<SortingState>({
   get: () => convertParamsToSorting(props.sorts ?? []),
-  set: value => emit('sorts', convertSortingToParams(value)),
+  set: (value) => emit('sorts', convertSortingToParams(value)),
 })
 
 const table = useVueTable({
-  get data() { return props.data },
-  get columns() { return props.columns },
-  get rowCount() { return props.totalItems },
+  get data() {
+    return props.data
+  },
+  get columns() {
+    return props.columns
+  },
+  get rowCount() {
+    return props.totalItems
+  },
   state: {
-    get pagination() { return { pageIndex: page.value - 1, pageSize: pageSize.value } },
-    get sorting() { return sorting.value },
+    get pagination() {
+      return { pageIndex: page.value - 1, pageSize: pageSize.value }
+    },
+    get sorting() {
+      return sorting.value
+    },
   },
   getCoreRowModel: getCoreRowModel(),
 
   // Server-side pagination
   manualPagination: true,
   onPaginationChange: (updaterOrValue) => {
-    const newState = typeof updaterOrValue === 'function'
-      ? updaterOrValue(table.getState().pagination)
-      : updaterOrValue
+    const newState =
+      typeof updaterOrValue === 'function'
+        ? updaterOrValue(table.getState().pagination)
+        : updaterOrValue
 
     page.value = newState.pageIndex + 1
     pageSize.value = newState.pageSize
@@ -88,10 +98,7 @@ const table = useVueTable({
         <TableBody>
           <template v-if="props.isLoading">
             <TableRow>
-              <TableCell
-                :colspan="columns.length"
-                class="relative h-24"
-              >
+              <TableCell :colspan="columns.length" class="relative h-24">
                 <div class="absolute inset-0 flex items-center justify-center">
                   <LoaderCircleIcon
                     class="w-8 h-8 animate-spin text-primary"

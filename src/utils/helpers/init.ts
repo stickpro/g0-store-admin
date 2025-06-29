@@ -1,7 +1,6 @@
 import router from '@/router'
 import { useAuthStore } from '@/stores/auth'
 
-
 export const intiRequests = async () => {
   try {
     await router.isReady()

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -41,7 +42,11 @@ watch([categoryMetaTitle, categoryMetaH1, categoryMetaKeyword, categoryMetaDescr
       </div>
       <div class="flex flex-col space-y-1.5">
         <Label for="m-h1">Meta keyword</Label>
-        <Input id="m-h1" v-model="categoryMetaKeyword" placeholder="Meta keyword of your category" />
+        <Input
+          id="m-h1"
+          v-model="categoryMetaKeyword"
+          placeholder="Meta keyword of your category"
+        />
       </div>
       <div class="flex flex-col space-y-1.5">
         <Label for="meta-description">Meta Description</Label>

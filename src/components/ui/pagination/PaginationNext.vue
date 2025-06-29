@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
-import {
-  Button,
-} from '@/components/ui/button'
 import { ChevronRight } from 'lucide-vue-next'
 import { PaginationNext, type PaginationNextProps } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
 
-const props = withDefaults(defineProps<PaginationNextProps & { class?: HTMLAttributes['class'] }>(), {
-  asChild: true,
-})
+import { type HTMLAttributes, computed } from 'vue'
+
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+const props = withDefaults(
+  defineProps<PaginationNextProps & { class?: HTMLAttributes['class'] }>(),
+  {
+    asChild: true,
+  },
+)
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props

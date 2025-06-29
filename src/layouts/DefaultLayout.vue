@@ -36,7 +36,7 @@
                   <SidebarMenuButton :tooltip="item.title">
                     <component :is="item.icon" />
                     <router-link :to="item.url">
-                    <span>{{ item.title }}</span>
+                      <span>{{ item.title }}</span>
                     </router-link>
                     <ChevronRight
                       v-if="item.items?.length"
@@ -190,11 +190,13 @@
                     {{ breadcrumb.name }}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator v-if="index < breadcrumbs.length - 1" class="hidden md:block" />
+                <BreadcrumbSeparator
+                  v-if="index < breadcrumbs.length - 1"
+                  class="hidden md:block"
+                />
               </template>
             </BreadcrumbList>
           </Breadcrumb>
-
         </div>
       </header>
       <slot />
@@ -203,8 +205,34 @@
 </template>
 
 <script setup lang="ts">
+import {
+  BadgeCheck,
+  Bell,
+  Bot,
+  ChevronRight,
+  ChevronsUpDown,
+  CreditCard,
+  Folder,
+  Forward,
+  Frame,
+  GalleryVerticalEnd,
+  Library,
+  LogOut,
+  Map,
+  MoreHorizontal,
+  Package,
+  PieChart,
+  Settings2,
+  Sparkles,
+  SquareTerminal,
+  Trash2,
+} from 'lucide-vue-next'
+import { storeToRefs } from 'pinia'
+
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { storeToRefs } from "pinia";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -213,7 +241,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   DropdownMenu,
@@ -244,31 +271,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import {
-  BadgeCheck,
-  Bell,
-  Bot,
-  ChevronRight,
-  ChevronsUpDown,
-  CreditCard,
-  Folder,
-  Forward,
-  Frame,
-  GalleryVerticalEnd,
-  LogOut,
-  Library,
-  Map,
-  MoreHorizontal,
-  PieChart,
-  Settings2,
-  Sparkles,
-  SquareTerminal,
-  Trash2,
-  Package,
-} from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 
 // This is sample data.
 const data = {
@@ -283,7 +286,6 @@ const data = {
       url: '/dashboard',
       icon: SquareTerminal,
       isActive: true,
-
     },
     {
       title: 'Categories',
@@ -313,8 +315,8 @@ const data = {
       icon: Package,
       items: [
         {
-          title: 'Introduction',
-          url: '#',
+          title: 'Product',
+          url: '/product',
         },
         {
           title: 'Get Started',
@@ -373,17 +375,17 @@ const data = {
   ],
 }
 
-const { user } = storeToRefs(useAuthStore());
-const { logout } = useAuthStore();
-const route = useRoute();
+const { user } = storeToRefs(useAuthStore())
+const { logout } = useAuthStore()
+const route = useRoute()
 
 const breadcrumbs = computed(() => {
-  const matchedRoutes = route.matched;
+  const matchedRoutes = route.matched
   return matchedRoutes.map((route) => ({
     name: route.meta.breadcrumb || route.name,
     path: route.path,
-  }));
-});
+  }))
+})
 </script>
 
 <style scoped></style>

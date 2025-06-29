@@ -1,22 +1,23 @@
-import {defineStore} from "pinia";
-import {ref} from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import {USER} from '@/utils/constants/user'
-import type {AuthRequest, UserInfoResponse} from "@/utils/types/api/generatedApiGo";
-import AuthService from "@/services/AuthService";
-import {useRouter} from "vue-router";
+import { defineStore } from 'pinia'
 
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+import AuthService from '@/services/AuthService'
+import { USER } from '@/utils/constants/user'
+import type { AuthRequest, UserInfoResponse } from '@/utils/types/api/generatedApiGo'
 
 export const userStartData: UserInfoResponse = {
-  id: "",
-  email: "",
-  location: "",
-  language: "",
+  id: '',
+  email: '',
+  location: '',
+  language: '',
   is_admin: false,
   email_verified_at: null,
   created_at: null,
-  updated_at: null
-};
+  updated_at: null,
+}
 
 export const setUserData = (data: UserInfoResponse): IUserResponse => {
   return {
@@ -26,10 +27,9 @@ export const setUserData = (data: UserInfoResponse): IUserResponse => {
     language: data.language ?? userStartData.language,
     is_admin: data.is_admin ?? userStartData.is_admin,
     created_at: data.created_at ?? userStartData.created_at,
-    updated_at: data.updated_at ?? userStartData.updated_at
-  };
-};
-
+    updated_at: data.updated_at ?? userStartData.updated_at,
+  }
+}
 
 export const useAuthStore = defineStore('Auth', () => {
   const isLoggedIn = ref<boolean>(!!localStorage.getItem(USER.TOKEN_KEY_LS))
@@ -43,11 +43,10 @@ export const useAuthStore = defineStore('Auth', () => {
       await getUser()
       isLoggedIn.value = !!user.value
     } catch (error: any) {
-      await removeToken()
+      removeToken()
       throw error
     }
   }
-
 
   const getUser = async () => {
     try {
@@ -100,6 +99,6 @@ export const useAuthStore = defineStore('Auth', () => {
     isLoading,
     initStore,
     login,
-    logout
+    logout,
   }
 })

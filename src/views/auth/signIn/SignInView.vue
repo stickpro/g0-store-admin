@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import {Button} from '@/components/ui/button'
-import {Input} from '@/components/ui/input'
-import {Label} from '@/components/ui/label'
-import {useAuthStore} from '@/stores/auth'
-import {storeToRefs} from 'pinia'
-import {ref} from 'vue'
-import type {AuthRequest} from "@/utils/types/api/generatedApiGo";
+import { storeToRefs } from 'pinia'
 
-const {isLoading} = storeToRefs(useAuthStore())
-const {login} = useAuthStore()
+import { ref } from 'vue'
 
-const form = ref<AuthRequest>({email: '', password: ''})
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useAuthStore } from '@/stores/auth'
+import type { AuthRequest } from '@/utils/types/api/generatedApiGo'
 
+const { isLoading } = storeToRefs(useAuthStore())
+const { login } = useAuthStore()
+
+const form = ref<AuthRequest>({ email: '', password: '' })
 </script>
 
 <template>
-  <div class="w-full lg:grid  lg:grid-cols-2 min-h-screen">
+  <div class="w-full lg:grid lg:grid-cols-2 min-h-screen">
     <div class="flex items-center justify-center py-12">
       <div class="mx-auto grid w-[350px] gap-6">
         <div class="grid gap-2 text-center">
-          <h1 class="text-3xl font-bold">
-            Войти
-          </h1>
+          <h1 class="text-3xl font-bold">Войти</h1>
           <p class="text-balance text-muted-foreground">
             Введите свой адрес электронной почты ниже, чтобы войти в свою учетную запись
           </p>
@@ -41,11 +40,9 @@ const form = ref<AuthRequest>({email: '', password: ''})
             <div class="flex items-center">
               <Label for="password">Пароль</Label>
             </div>
-            <Input id="password" type="password" v-model="form.password" required/>
+            <Input id="password" type="password" v-model="form.password" required />
           </div>
-          <Button type="submit" class="w-full">
-            Вход
-          </Button>
+          <Button type="submit" class="w-full"> Вход </Button>
         </form>
       </div>
     </div>

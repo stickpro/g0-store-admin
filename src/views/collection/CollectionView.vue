@@ -1,24 +1,34 @@
 <script setup lang="ts">
+import type { ColumnDef } from '@tanstack/vue-table'
+import { File, ListFilter, PlusCircle } from 'lucide-vue-next'
+import { storeToRefs } from 'pinia'
+
+import { h, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import DataTable from '@/components/data-table/DataTable.vue'
-import {
-  DropdownMenu, DropdownMenuContent,
-  DropdownMenuItem, DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { File, ListFilter, PlusCircle } from 'lucide-vue-next'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { storeToRefs } from 'pinia'
-import { useCollectionStore } from '@/stores/collection'
-import type { ColumnDef } from '@tanstack/vue-table'
-import { h, onMounted, ref, watch } from 'vue'
-import { Checkbox } from '@/components/ui/checkbox'
 import DataTableColumnHeader from '@/components/data-table/DataTableColumnHeader.vue'
 import DataTableRowActions from '@/components/data-table/DataTableRowActions.vue'
-import { useRouter } from 'vue-router'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useCollectionStore } from '@/stores/collection'
 import type { ICollectionRequest } from '@/utils/types/api/apiGo.ts'
 
 const { collections, isLoading } = storeToRefs(useCollectionStore())
@@ -68,7 +78,8 @@ const columns: ColumnDef<any>[] = [
     id: 'actions',
     header: ({ column }) =>
       h(DataTableColumnHeader, { column, title: 'Actions', class: 'text-right' }),
-    cell: ({ row }) => h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
+    cell: ({ row }) =>
+      h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
   },
 ]
 
@@ -79,15 +90,12 @@ const fetchCollections = async () => {
 
 watch(params.value, fetchCollections, { immediate: true })
 
-onMounted( async () => {
+onMounted(async () => {
   await fetchCollections()
 })
 </script>
 
-<style scoped>
-
-</style>
-
+<style scoped></style>
 
 <template>
   <main class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -99,7 +107,7 @@ onMounted( async () => {
           <TabsTrigger value="draft"> Draft</TabsTrigger>
           <TabsTrigger value="archived" class="hidden sm:flex"> Archived</TabsTrigger>
         </TabsList>
-        <div class="ml-auto flex items-center gap-2">
+        <div class="ml-auto flex items-center gap2">
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button variant="outline" size="sm" class="h-7 gap-1">

@@ -1,5 +1,8 @@
 <script setup lang="ts" generic="TData">
 import type { Table } from '@tanstack/vue-table'
+
+import { computed } from 'vue'
+
 import {
   Pagination,
   PaginationFirst,
@@ -16,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { computed } from 'vue'
 
 interface Props {
   table: Table<TData>
@@ -28,7 +30,7 @@ const props = defineProps<Props>()
 const pageSize = defineModel<number>('pageSize', { required: true })
 const pageSizeStr = computed<string>({
   get: () => pageSize.value.toString(),
-  set: value => pageSize.value = Number(value),
+  set: (value) => (pageSize.value = Number(value)),
 })
 
 const currentPage = computed(() => props.table.getState().pagination.pageIndex + 1)
@@ -44,9 +46,7 @@ const recordRange = computed(() => {
 <template>
   <div class="flex ml-auto space-x-6">
     <div class="flex items-center gap-1">
-      <span class="text-sm sr-only sm:not-sr-only">
-        Items per page:
-      </span>
+      <span class="text-sm sr-only sm:not-sr-only"> Items per page: </span>
       <Select v-model="pageSizeStr">
         <SelectTrigger class="w-20">
           <SelectValue />

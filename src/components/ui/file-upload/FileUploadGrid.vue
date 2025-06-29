@@ -8,10 +8,7 @@
     "
   >
     <template v-for="row in ROWS">
-      <template
-        v-for="col in COLUMNS"
-        :key="`${row}-${col}`"
-      >
+      <template v-for="col in COLUMNS" :key="`${row}-${col}`">
         <div
           :class="
             cn(
@@ -28,15 +25,16 @@
 </template>
 
 <script lang="ts" setup>
-import type { HTMLAttributes } from 'vue';
-import { cn } from '@/lib/utils';
+import type { HTMLAttributes } from 'vue'
+
+import { cn } from '@/lib/utils'
 
 interface FileUploadGridProps {
-  class?: HTMLAttributes['class'];
+  class?: HTMLAttributes['class']
 }
 
-defineProps<FileUploadGridProps>();
+defineProps<FileUploadGridProps>()
 
-const ROWS = 11;
-const COLUMNS = 41;
+const ROWS = 11
+const COLUMNS = 41
 </script>

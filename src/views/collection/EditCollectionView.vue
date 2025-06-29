@@ -1,15 +1,21 @@
 <script setup lang="ts">
+import { CornerUpLeft, PlusCircle, Trash2 } from 'lucide-vue-next'
+import { storeToRefs } from 'pinia'
+
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+import CollectionForm from '@/components/collection/CollectionForm.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { onMounted, ref } from 'vue'
-import { storeToRefs } from 'pinia'
-import { CornerUpLeft, PlusCircle, Trash2 } from 'lucide-vue-next'
-import { useRoute, useRouter } from 'vue-router'
-import MediaService from '@/services/MediaService'
-import type { MediumResponse, UpdateCategoryRequest, UpdateCollectionRequest } from '@/utils/types/api/generatedApiGo'
 import { useToast } from '@/components/ui/toast/use-toast'
-import CollectionForm from '@/components/collection/CollectionForm.vue'
+import MediaService from '@/services/MediaService'
 import { useCollectionStore } from '@/stores/collection'
+import type {
+  MediumResponse,
+  UpdateCategoryRequest,
+  UpdateCollectionRequest,
+} from '@/utils/types/api/generatedApiGo'
 
 // Инициализация хранилища, роутера и toast
 const collectionStore = useCollectionStore()
@@ -40,10 +46,9 @@ onMounted(async () => {
       description: 'Идентификатор коллекции не указан',
       variant: 'destructive',
     })
-    await router.push({ name: 'collection'})
+    await router.push({ name: 'collection' })
   }
 })
-
 
 // Обновление категории с загрузкой изображения
 const updateWithUpload = async () => {
@@ -53,7 +58,7 @@ const updateWithUpload = async () => {
   try {
     // Подготовка данных для обновления
     const updateRequest: UpdateCollectionRequest = {
-      ...currentCollection.value
+      ...currentCollection.value,
     }
 
     // Обновление категории

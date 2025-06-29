@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { h, onMounted, ref, watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
 import type { ColumnDef } from '@tanstack/vue-table'
+import { File, ListFilter, PlusCircle } from 'lucide-vue-next'
+import { storeToRefs } from 'pinia'
 
+import { h, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
+import DataTable from '@/components/data-table/DataTable.vue'
+import DataTableColumnHeader from '@/components/data-table/DataTableColumnHeader.vue'
+import DataTableRowActions from '@/components/data-table/DataTableRowActions.vue'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   Card,
   CardContent,
@@ -14,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,14 +28,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Switch } from '@/components/ui/switch'
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { File, ListFilter, PlusCircle } from 'lucide-vue-next'
 import { useCategoryStore } from '@/stores/category'
-
-import DataTable from '@/components/data-table/DataTable.vue'
-import DataTableColumnHeader from '@/components/data-table/DataTableColumnHeader.vue'
-import DataTableRowActions from '@/components/data-table/DataTableRowActions.vue'
 import type { ICategoryRequest } from '@/utils/types/api/apiGo.ts'
 
 const { categories, isLoading } = storeToRefs(useCategoryStore())
@@ -89,7 +88,8 @@ const columns: ColumnDef<any>[] = [
     id: 'actions',
     header: ({ column }) =>
       h(DataTableColumnHeader, { column, title: 'Actions', class: 'text-right' }),
-    cell: ({ row }) => h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
+    cell: ({ row }) =>
+      h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
   },
 ]
 
@@ -100,7 +100,7 @@ const fetchCategories = async () => {
 
 watch(params.value, fetchCategories, { immediate: true })
 
-onMounted( async () => {
+onMounted(async () => {
   await fetchCategories()
 })
 </script>

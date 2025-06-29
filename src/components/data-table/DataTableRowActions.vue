@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { DotsHorizontalIcon } from '@radix-icons/vue'
 import type { Row } from '@tanstack/vue-table'
+
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -9,7 +11,6 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { DotsHorizontalIcon } from '@radix-icons/vue'
 import { cn } from '@/lib/utils.ts'
 
 interface DataTableRowActionsProps {

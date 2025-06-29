@@ -3,9 +3,7 @@ import _ from 'lodash'
 
 export type SortPrefix<T extends string> = T | `-${T}`
 
-export function convertSortingToParams<T extends string>(
-  sorting: SortingState,
-): SortPrefix<T>[] {
+export function convertSortingToParams<T extends string>(sorting: SortingState): SortPrefix<T>[] {
   return sorting.map((sort) => {
     const prefix = sort.desc ? '-' : ''
     const id = _.snakeCase(sort.id)

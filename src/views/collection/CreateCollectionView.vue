@@ -34,21 +34,23 @@
   </main>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CornerUpLeft, PlusCircle } from 'lucide-vue-next'
-import { Button } from '@/components/ui/button'
+
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+
 import CollectionForm from '@/components/collection/CollectionForm.vue'
-import type { CreateCollectionRequest } from '@/utils/types/api/generatedApiGo'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCollectionStore } from '@/stores/collection'
+import type { CreateCollectionRequest } from '@/utils/types/api/generatedApiGo'
 
 const router = useRouter()
 const { createCollection } = useCollectionStore()
-const collectionInfo = ref<CreateCollectionRequest>( {
+const collectionInfo = ref<CreateCollectionRequest>({
   name: '',
   description: undefined,
-  slug: ''
+  slug: '',
 })
 
 const saveAll = async () => {

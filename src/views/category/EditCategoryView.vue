@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { onMounted, ref } from 'vue'
-import { storeToRefs } from 'pinia'
 import { CornerUpLeft, PlusCircle, Trash2 } from 'lucide-vue-next'
+import { storeToRefs } from 'pinia'
+
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useCategoryStore } from '@/stores/category'
+
 import CategoryForm from '@/components/category/CategoryForm.vue'
 import MetaInformationForm from '@/components/category/CategoryMetaForm.vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileUpload, FileUploadGrid } from '@/components/ui/file-upload'
-import MediaService from '@/services/MediaService'
-import type { MediumResponse, UpdateCategoryRequest } from '@/utils/types/api/generatedApiGo'
 import { useToast } from '@/components/ui/toast/use-toast'
+import MediaService from '@/services/MediaService'
+import { useCategoryStore } from '@/stores/category'
+import type { MediumResponse, UpdateCategoryRequest } from '@/utils/types/api/generatedApiGo'
 
 // Инициализация хранилища, роутера и toast
 const categoryStore = useCategoryStore()
