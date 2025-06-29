@@ -25,10 +25,12 @@ interface Props {
   totalItems: number
   pageSizeOptions?: number[]
   sorts?: SortPrefix<TSort>[]
+  hidePagination?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   pageSizeOptions: () => [10, 20, 30],
   sorts: () => [],
+  hidePagination: () => false,
 })
 
 const emit = defineEmits<{
@@ -129,9 +131,8 @@ const table = useVueTable({
         </TableBody>
       </Table>
     </div>
-
     <DataTablePagination
-      v-if="!props.isLoading"
+      v-if="!hidePagination && !props.isLoading && totalItems > 0"
       v-model:page-size="pageSize"
       :total-items="props.totalItems ?? 0"
       :page-size-options="props.pageSizeOptions"
