@@ -377,6 +377,12 @@ export interface ResponseWithFullPaginationGithubComStickproGoStoreInternalStora
   pagination?: FullPagingData
 }
 
+export enum StockStatus {
+  InStock = 'IN_STOCK',
+  PreOrder = 'PRE_ORDER',
+  OutOfStock = 'OUT_OF_STOCK',
+}
+
 export interface UpdateCategoryRequest {
   /** @minLength 1 */
   description?: string
@@ -484,12 +490,6 @@ export interface UserInfoResponse {
   updated_at?: string
 }
 
-export enum GithubComStickproGoStoreInternalConstantStockStatus {
-  InStock = 'IN_STOCK',
-  PreOrder = 'PRE_ORDER',
-  OutOfStock = 'OUT_OF_STOCK',
-}
-
 export interface GithubComStickproGoStoreInternalDeliveryHttpRequestAttributeRequestCreateAttributeGroupRequest {
   /**
    * @minLength 1
@@ -578,7 +578,7 @@ export interface GithubComStickproGoStoreInternalStorageRepositoryRepositoryProd
   sku?: PgtypeText
   slug?: string
   sort_order?: number
-  stock_status?: GithubComStickproGoStoreInternalConstantStockStatus
+  stock_status?: StockStatus
   subtract?: boolean
   upc?: PgtypeText
   updated_at?: PgtypeTimestamp
