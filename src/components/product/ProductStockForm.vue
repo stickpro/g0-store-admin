@@ -10,19 +10,35 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from '@/components/ui/number-field'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 enum StockStatus {
   InStock = 'IN_STOCK',
   PreOrder = 'PRE_ORDER',
   OutOfStock = 'OUT_OF_STOCK',
 }
+
+const statusLabels: Record<StockStatus, string> = {
+  [StockStatus.InStock]: 'In Stock',
+  [StockStatus.PreOrder]: 'Pre Order',
+  [StockStatus.OutOfStock]: 'Out of Stock',
+}
+
 const props = defineProps<{
   modelValue: any
 }>()
 
 const emit = defineEmits(['update:modelValue'])
 
-const productQuantity = ref<number>(props.modelValue.quantity || 0)
+const productQuantity = ref<number>(props.modelValue.quantity || 1)
 const productStockStatus = ref<StockStatus>(props.modelValue.stock_status ?? StockStatus.InStock)
 const productLocation = ref<string>(props.modelValue.location || '')
 const productSubtract = ref<boolean>(props.modelValue.subtract || false)
@@ -46,19 +62,46 @@ watch(
 <template>
   <form>
     <div class="grid items-center w-full gap-4">
-      <div class="flex flex-col space-y-1.5">
-        <NumberField>
+      <div class="grid grid-cols-2 w-full gap-4">
+        <NumberField v-model="productQuantity">
           <Label>Quantity</Label>
           <NumberFieldContent>
             <NumberFieldDecrement />
-            <NumberFieldInput v-model="productQuantity" />
+            <NumberFieldInput />
             <NumberFieldIncrement />
           </NumberFieldContent>
         </NumberField>
-      </div>
-      <div class="flex flex-col space-y-1.5">
-        <Label for="location">Location</Label>
-        <Input id="location" v-model="productLocation" placeholder="location of your product" />
+        <NumberField v-model="productMinimum">
+          <Label>Minimum order</Label>
+          <NumberFieldContent>
+            <NumberFieldDecrement />
+            <NumberFieldInput />
+            <NumberFieldIncrement />
+          </NumberFieldContent>
+        </NumberField>
+        <div class="grid gap-1.5">
+          <Label>Stock status</Label>
+          <Select v-model="productStockStatus">
+            <SelectTrigger>
+              <SelectValue placeholder="Select a fruit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  v-for="status in Object.values(StockStatus)"
+                  :key="status"
+                  :value="status"
+                >
+                  {{ statusLabels[status] }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div class="grid gap-1.5">
+          <Label for="location">Location</Label>
+          <Input id="location" v-model="productLocation" placeholder="location of your product" />
+        </div>
       </div>
     </div>
   </form>

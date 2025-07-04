@@ -35,7 +35,7 @@ const productInfo = ref<CreateProductRequest>({
   mpn: '',
   location: '',
   quantity: 0,
-  stock_status: 'in_stock',
+  stock_status: 'IN_STOCK',
   image: '',
   manufacturer_id: undefined,
   price: 0.0,
