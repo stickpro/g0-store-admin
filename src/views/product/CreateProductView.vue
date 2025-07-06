@@ -7,10 +7,20 @@ import { useRouter } from 'vue-router'
 import ProductForm from '@/components/product/ProductForm.vue'
 import ProductIdentifierForm from '@/components/product/ProductIdentifierForm.vue'
 import ProductMetaForm from '@/components/product/ProductMetaForm.vue'
+import ProductPhysicalAttribute from '@/components/product/ProductPhysicalAttribute.vue'
 import ProductStockForm from '@/components/product/ProductStockForm.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileUpload, FileUploadGrid } from '@/components/ui/file-upload'
+import { Label } from '@/components/ui/label'
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from '@/components/ui/number-field'
+import { Switch } from '@/components/ui/switch'
 import MediaService from '@/services/MediaService'
 import { useProductStore } from '@/stores/product'
 import type { CreateProductRequest } from '@/utils/types/api/generatedApiGo'
@@ -45,7 +55,7 @@ const productInfo = ref<CreateProductRequest>({
   height: 0.0,
   subtract: true,
   minimum: 1,
-  sort_order: 0,
+  sort_order: 1,
   is_enable: true,
 })
 
@@ -124,6 +134,34 @@ const handleFilesChange = (newFiles: any) => {
     <div class="flex flex-col gap-6">
       <Card>
         <CardHeader>
+          <CardTitle>Addition Info</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <NumberField v-model="productInfo.sort_order">
+            <Label>Sort order</Label>
+            <NumberFieldContent>
+              <NumberFieldDecrement />
+              <NumberFieldInput />
+              <NumberFieldIncrement />
+            </NumberFieldContent>
+          </NumberField>
+        </CardContent>
+      </Card>
+      <div class="flex flex-row items-center justify-between rounded-lg border p-4">
+        <div class="space-y-0.5">
+          <div
+            class="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-base"
+          >
+            Product status
+          </div>
+          <p class="text-sm text-muted-foreground">Product status show product on catalog</p>
+        </div>
+        <div>
+          <Switch v-model="productInfo.is_enable" />
+        </div>
+      </div>
+      <Card>
+        <CardHeader>
           <CardTitle>Image Category</CardTitle>
         </CardHeader>
         <CardContent>
@@ -137,10 +175,33 @@ const handleFilesChange = (newFiles: any) => {
       </Card>
       <Card>
         <CardHeader>
+          <CardTitle>Price</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <NumberField v-model="productInfo.price">
+            <Label>Price</Label>
+            <NumberFieldContent>
+              <NumberFieldDecrement />
+              <NumberFieldInput />
+              <NumberFieldIncrement />
+            </NumberFieldContent>
+          </NumberField>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
           <CardTitle>Stocks</CardTitle>
         </CardHeader>
         <CardContent>
           <ProductStockForm v-model="productInfo" />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Phisical Attribute</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProductPhysicalAttribute v-model="productInfo" />
         </CardContent>
       </Card>
     </div>

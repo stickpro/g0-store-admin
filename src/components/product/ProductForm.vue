@@ -15,13 +15,15 @@ const emit = defineEmits(['update:modelValue'])
 
 const productName = ref<string>(props.modelValue.name || '')
 const productSlug = ref<string>(props.modelValue.slug || '')
+const productModel = ref<string>(props.modelValue.model || '')
 const productDescription = ref<string>(props.modelValue.description || '')
 
-watch([productName, productSlug, productDescription], () => {
+watch([productName, productSlug, productModel, productDescription], () => {
   emit('update:modelValue', {
     ...props.modelValue,
     name: productName.value,
     slug: productSlug.value,
+    model: productModel.value,
     description: productDescription.value,
   })
 })
@@ -44,6 +46,10 @@ watch([productName, productSlug, productDescription], () => {
             {{ $appFrontend }}{{ frontendProductUrl }}
           </span>
         </div>
+      </div>
+      <div class="flex flex-col space-y-1.5">
+        <Label for="model">Model</Label>
+        <Input id="model" v-model="productModel" placeholder="Model of your product" />
       </div>
       <div class="flex flex-col space-y-1.5">
         <Label for="description">Description</Label>

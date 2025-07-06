@@ -17,6 +17,7 @@ defineProps<{
   products: IProductResponse
   isLoading: boolean
 }>()
+const fileStorageUrl = import.meta.env.VITE_FILE_STORAGE_URL || 'http://localhost:3000/storage/'
 
 const columns: ColumnDef<any>[] = [
   {
@@ -41,6 +42,24 @@ const columns: ColumnDef<any>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: 'image', // Adjust this key to match your data property
+    header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Image' }),
+    cell: ({ row }) => {
+      const imagePath = fileStorageUrl + row.getValue('image')
+      return h('div', { class: 'w-20' }, [
+        imagePath
+          ? h('img', {
+              src: imagePath,
+              alt: row.getValue('name') || 'Product image',
+              class: 'h-12 w-12 object-cover rounded', // Adjust styling as needed
+            })
+          : h('span', 'No image'),
+      ])
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: 'name',
     header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Name' }),
     cell: ({ row }) => h('div', { class: 'w-20' }, row.getValue('name')),
@@ -48,9 +67,9 @@ const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'slug',
     header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Slug' }),
-
     cell: ({ row }) => h('div', { class: 'w-20' }, row.getValue('slug')),
   },
+
   {
     id: 'actions',
     header: ({ column }) =>
@@ -59,11 +78,6 @@ const columns: ColumnDef<any>[] = [
       h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
   },
 ]
-</script>
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-}
 </script>
 <template>
   <DataTable

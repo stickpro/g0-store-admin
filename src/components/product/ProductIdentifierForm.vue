@@ -22,6 +22,7 @@ watch([productSku, productUpc, productEan, productJan, productIsbn, productMpn],
   emit('update:modelValue', {
     ...props.modelValue,
     sku: productSku.value,
+    upc: productUpc.value,
     ean: productEan.value,
     jan: productJan.value,
     isbn: productIsbn.value,
@@ -38,6 +39,10 @@ watch([productSku, productUpc, productEan, productJan, productIsbn, productMpn],
         <Input id="sku" v-model="productSku" placeholder="Sku of your product" />
       </div>
       <div class="flex flex-col space-y-1.5">
+        <Label for="upc">Upc</Label>
+        <Input id="upc" v-model="productUpc" placeholder="Upc of your product" />
+      </div>
+      <div class="flex flex-col space-y-1.5">
         <Label for="ean">Ean</Label>
         <Input id="ean" v-model="productEan" placeholder="Ean of your product" />
       </div>
@@ -47,11 +52,11 @@ watch([productSku, productUpc, productEan, productJan, productIsbn, productMpn],
       </div>
       <div class="flex flex-col space-y-1.5">
         <Label for="isbn">Isbn</Label>
-        <Input id="isbn" v-model="productJan" placeholder="Isbn of your product" />
+        <Input id="isbn" v-model="productIsbn" placeholder="Isbn of your product" />
       </div>
       <div class="flex flex-col space-y-1.5">
         <Label for="mpn">Mpn</Label>
-        <Input id="mpn" v-model="productJan" placeholder="Mpn of your product" />
+        <Input id="mpn" v-model="productMpn" placeholder="Mpn of your product" />
       </div>
     </div>
   </form>

@@ -36,7 +36,11 @@
         <div class="relative mx-auto mt-10 w-full max-w-xl space-y-4">
           <Motion
             v-for="(file, idx) in files"
-            :key="`file-${idx}`"
+            :key="file.name + file.lastModified"
+            draggable="true"
+            @dragstart="() => (dragIndex = idx)"
+            @dragover.prevent="onDragOver(idx)"
+            @drop.prevent="onDrop(idx)"
             :initial="{ opacity: 0, scaleX: 0 }"
             :animate="{ opacity: 1, scaleX: 1 }"
             class="relative z-40 mx-auto gap-1 flex w-full flex-row items-start justify-start overflow-hidden rounded-md bg-white p-4 shadow-sm dark:bg-neutral-900"
@@ -160,6 +164,7 @@ const emit = defineEmits<{ (e: 'onChange', files: File[]): void }>()
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const files = ref<File[]>([])
 const isActive = ref<boolean>(false)
+const dragIndex = ref<number | null>(null)
 
 function getFilePreview(file: File) {
   return URL.createObjectURL(file)
@@ -197,5 +202,19 @@ function handleDrop(e: DragEvent) {
 function removeFile(index: number) {
   files.value.splice(index, 1)
   emit('onChange', files.value)
+}
+
+function onDragOver(overIndex: number) {
+  if (dragIndex.value === null || dragIndex.value === overIndex) return
+  const tempFiles = [...files.value]
+  const draggedItem = tempFiles.splice(dragIndex.value, 1)[0]
+  tempFiles.splice(overIndex, 0, draggedItem)
+  files.value = tempFiles
+  dragIndex.value = overIndex
+  emit('onChange', files.value)
+}
+
+function onDrop() {
+  dragIndex.value = null
 }
 </script>
