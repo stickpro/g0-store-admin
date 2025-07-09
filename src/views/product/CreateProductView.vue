@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CornerUpLeft, PlusCircle } from 'lucide-vue-next'
+import { CornerUpLeft, LogIn, PlusCircle } from 'lucide-vue-next'
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -23,7 +23,7 @@ import {
 import { Switch } from '@/components/ui/switch'
 import MediaService from '@/services/MediaService'
 import { useProductStore } from '@/stores/product'
-import type { CreateProductRequest } from '@/utils/types/api/generatedApiGo'
+import type { CreateProductRequest, MediumResponse } from '@/utils/types/api/generatedApiGo'
 
 const router = useRouter()
 const { createProduct } = useProductStore()
@@ -57,25 +57,43 @@ const productInfo = ref<CreateProductRequest>({
   minimum: 1,
   sort_order: 1,
   is_enable: true,
+  media_ids: [],
 })
 
 const saveAll = async () => {
+  let uploadedFiles: MediumResponse[] = []
+
   try {
-    const file = await loadFile()
-    productInfo.value.image = file.path
+    uploadedFiles = await loadFile()
+
+    productInfo.value.media_ids = uploadedFiles
+      .map((file) => file.id)
+      .filter((id): id is string => typeof id === 'string')
+
+    if (uploadedFiles.length > 0) {
+      productInfo.value.image = uploadedFiles[0].path
+    }
+
     await createProduct(productInfo.value)
-    await router.push({ name: 'product' })
+    // await router.push({ name: 'product' })
   } catch (error) {
-    console.error(error)
+    await Promise.all(
+      uploadedFiles
+        .map((file) => file.id)
+        .filter((id): id is string => typeof id === 'string')
+        .map((id) => MediaService.deleteFile(id)),
+    )
+
+    console.error('Ошибка при сохранении продукта:', error)
   }
 }
 
 const files = ref([])
-
 const loadFile = async () => {
-  return await MediaService.uploadFile(files.value[0])
+  const uploads = files.value.map((file) => MediaService.uploadFile(file))
+  const uploadedFiles = await Promise.all(uploads)
+  return uploadedFiles
 }
-
 const handleFilesChange = (newFiles: any) => {
   files.value = newFiles
 }

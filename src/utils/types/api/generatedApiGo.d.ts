@@ -156,14 +156,15 @@ export interface CreateManufacturerRequest {
 export interface CreateProductRequest {
   description?: string
   ean?: string
-  height: number
+  height?: number
   image?: string
   is_enable: boolean
   isbn?: string
   jan?: string
-  length: number
+  length?: number
   location?: string
   manufacturer_id?: string
+  media_ids?: string[]
   meta_description?: string
   meta_h1?: string
   meta_keyword?: string
@@ -180,8 +181,8 @@ export interface CreateProductRequest {
   stock_status?: string
   subtract?: boolean
   upc?: string
-  weight: number
-  width: number
+  weight?: number
+  width?: number
 }
 
 export interface FullPagingData {
@@ -282,6 +283,12 @@ export interface JSONResponseUserInfoResponse {
 export interface JSONResponseArrayGithubComStickproGoStoreInternalModelsCity {
   code?: number
   data?: GithubComStickproGoStoreInternalModelsCity[]
+  message?: string
+}
+
+export interface JSONResponseString {
+  code?: number
+  data?: string
   message?: string
 }
 

@@ -1,4 +1,4 @@
-import { api } from '@/api/api.ts'
+import { api } from '@/api/Api'
 import type { MediumResponse } from '@/utils/types/api/generatedApiGo'
 
 export default class MediaService {
@@ -6,7 +6,10 @@ export default class MediaService {
     const formData = new FormData()
     formData.append('file', file)
 
-    const { data } = await api.uploadFile('/media/upload', formData)
+    const { data }: any = await api.uploadFile('/media/upload', formData)
     return data
+  }
+  public static async deleteFile(uuid: string): Promise<void> {
+    await api.delete(`/media/${uuid}`)
   }
 }
