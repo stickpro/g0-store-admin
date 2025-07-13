@@ -24,7 +24,7 @@ export default [
   },
   {
     path: '/collection/:id/edit',
-    name: 'edit-create',
+    name: 'collection-edit',
     component: () => import('@/views/collection/EditCollectionView.vue'),
     meta: {
       layout: APP_LAYOUT.DEFAULT,

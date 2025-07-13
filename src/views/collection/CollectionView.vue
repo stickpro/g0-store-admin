@@ -79,7 +79,7 @@ const columns: ColumnDef<any>[] = [
     header: ({ column }) =>
       h(DataTableColumnHeader, { column, title: 'Actions', class: 'text-right' }),
     cell: ({ row }) =>
-      h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
+      h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'collection-edit' }),
   },
 ]
 

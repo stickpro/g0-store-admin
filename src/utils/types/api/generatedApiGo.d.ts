@@ -250,6 +250,12 @@ export interface JSONResponseProductResponse {
   message?: string
 }
 
+export interface JSONResponseProductWithMediumResponse {
+  code?: number
+  data?: ProductWithMediumResponse
+  message?: string
+}
+
 export interface JSONResponseRegisterUserResponse {
   code?: number
   data?: RegisterUserResponse
@@ -348,6 +354,11 @@ export interface ProductResponse {
   upc?: string
   weight?: number
   width?: number
+}
+
+export interface ProductWithMediumResponse {
+  medium?: MediumResponse[]
+  product?: ProductResponse
 }
 
 export interface RegisterRequest {

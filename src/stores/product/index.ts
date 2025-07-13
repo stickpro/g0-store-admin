@@ -7,6 +7,7 @@ import ProductService from '@/services/ProductService'
 import type { IProductRequest, IProductResponse } from '@/utils/types/api/apiGo.ts'
 import type {
   CreateProductRequest,
+  MediumResponse,
   ProductResponse,
   UpdateProductRequest,
 } from '@/utils/types/api/generatedApiGo'
@@ -25,6 +26,7 @@ export const useProductStore = defineStore('product', () => {
   const isLoading = ref<boolean>(true)
   const products = ref<IProductResponse>(defaultDataProducts)
   const currentProduct = ref<ProductResponse | null>(null)
+  const currentProductMedium = ref<MediumResponse[]>([])
   const { toast } = useToast()
 
   const getProducts = async (payload: IProductRequest): Promise<void> => {
@@ -47,6 +49,24 @@ export const useProductStore = defineStore('product', () => {
     try {
       isLoading.value = true
       currentProduct.value = await ProductService.getProductById(uuid)
+    } catch (error: any) {
+      toast({
+        title: 'Error fetching products.',
+        description: error.message || 'An error occurred while fetching products.',
+        variant: 'destructive',
+      })
+      throw error
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const getProductsWithMedium = async (uuid: string): Promise<void> => {
+    try {
+      isLoading.value = true
+      const { product, medium } = await ProductService.getProductWithMediumById(uuid)
+      currentProduct.value = product || null
+      currentProductMedium.value = medium || []
     } catch (error: any) {
       toast({
         title: 'Error fetching products.',
@@ -104,12 +124,16 @@ export const useProductStore = defineStore('product', () => {
   }
 
   return {
+    // state
     isLoading,
     products,
     currentProduct,
+    currentProductMedium,
+    // methods
     createProduct,
     updateProduct,
     getProducts,
     getProductById,
+    getProductsWithMedium,
   }
 })

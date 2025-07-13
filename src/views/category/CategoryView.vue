@@ -81,7 +81,7 @@ const columns: ColumnDef<any>[] = [
     cell: ({ row }) =>
       h(Switch, {
         checked: row.getValue('is_enable'),
-        'onUpdate:checked': (value) => row.toggleSelected(!!value),
+        'onUpdate:checked': (value: boolean) => row.toggleSelected(!!value),
       }),
   },
   {
@@ -89,7 +89,7 @@ const columns: ColumnDef<any>[] = [
     header: ({ column }) =>
       h(DataTableColumnHeader, { column, title: 'Actions', class: 'text-right' }),
     cell: ({ row }) =>
-      h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
+      h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'category-edit' }),
   },
 ]
 

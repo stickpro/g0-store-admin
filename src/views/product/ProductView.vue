@@ -42,48 +42,6 @@ const params = ref({
   pageSize: 10,
 })
 
-const columns: ColumnDef<any>[] = [
-  {
-    id: 'select',
-    header: ({ table }) =>
-      h(Checkbox, {
-        checked:
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate'),
-        'onUpdate:checked': (value) => table.toggleAllPageRowsSelected(!!value),
-        ariaLabel: 'Select all',
-        class: 'translate-y-0.5',
-      }),
-    cell: ({ row }) =>
-      h(Checkbox, {
-        checked: row.getIsSelected(),
-        'onUpdate:checked': (value) => row.toggleSelected(!!value),
-        ariaLabel: 'Select row',
-        class: 'translate-y-0.5',
-      }),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'name',
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Name' }),
-    cell: ({ row }) => h('div', { class: 'w-20' }, row.getValue('name')),
-  },
-  {
-    accessorKey: 'slug',
-    header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Slug' }),
-
-    cell: ({ row }) => h('div', { class: 'w-20' }, row.getValue('slug')),
-  },
-  {
-    id: 'actions',
-    header: ({ column }) =>
-      h(DataTableColumnHeader, { column, title: 'Actions', class: 'text-right' }),
-    cell: ({ row }) =>
-      h(DataTableRowActions, { row, class: 'justify-end', editUrlName: 'edit-create' }),
-  },
-]
-
 const fetchProducts = async () => {
   const payload: IProductRequest = { page: params.value.page, page_size: params.value.pageSize }
   await getProducts(payload)
@@ -143,7 +101,7 @@ onMounted(async () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ProductTable :params="params" :products="products" :isLoafing="isLoading" />
+            <ProductTable :params="params" :products="products" :isLoading="isLoading" />
           </CardContent>
           <CardFooter>
             <div class="text-xs text-muted-foreground">

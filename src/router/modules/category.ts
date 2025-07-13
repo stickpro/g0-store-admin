@@ -24,7 +24,7 @@ export default [
   },
   {
     path: '/category/:id/edit',
-    name: 'edit-create',
+    name: 'category-edit',
     component: () => import('@/views/category/EditCategoryView.vue'),
     meta: {
       layout: APP_LAYOUT.DEFAULT,

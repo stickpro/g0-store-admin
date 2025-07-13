@@ -11,12 +11,25 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue'])
 
-const productSku = ref<string>(props.modelValue.sku || '')
-const productUpc = ref<string>(props.modelValue.upc || '')
-const productEan = ref<string>(props.modelValue.ean || '')
-const productJan = ref<string>(props.modelValue.jan || '')
-const productIsbn = ref<string>(props.modelValue.isbn || '')
-const productMpn = ref<string>(props.modelValue.mpn || '')
+const productSku = ref('')
+const productUpc = ref('')
+const productEan = ref('')
+const productJan = ref('')
+const productIsbn = ref('')
+const productMpn = ref('')
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    productSku.value = newValue.sku || ''
+    productUpc.value = newValue.upc || ''
+    productEan.value = newValue.ean || ''
+    productJan.value = newValue.jan || ''
+    productIsbn.value = newValue.isbn || ''
+    productMpn.value = newValue.Mpn || ''
+  },
+  { immediate: true },
+)
 
 watch([productSku, productUpc, productEan, productJan, productIsbn, productMpn], () => {
   emit('update:modelValue', {

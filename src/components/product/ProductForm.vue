@@ -13,10 +13,21 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue'])
 
-const productName = ref<string>(props.modelValue.name || '')
-const productSlug = ref<string>(props.modelValue.slug || '')
-const productModel = ref<string>(props.modelValue.model || '')
-const productDescription = ref<string>(props.modelValue.description || '')
+const productName = ref('')
+const productSlug = ref('')
+const productModel = ref('')
+const productDescription = ref('')
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    productName.value = newValue.name || ''
+    productSlug.value = newValue.slug || ''
+    productModel.value = newValue.model || ''
+    productDescription.value = newValue.description || ''
+  },
+  { immediate: true },
+)
 
 watch([productName, productSlug, productModel, productDescription], () => {
   emit('update:modelValue', {

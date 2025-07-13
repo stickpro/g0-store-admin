@@ -11,10 +11,21 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue'])
 
-const productMetaTitle = ref<string>(props.modelValue.metaTitle || '')
-const productMetaH1 = ref<string>(props.modelValue.metaH1 || '')
-const productMetaKeyword = ref<string>(props.modelValue.metaKeyword || '')
-const productMetaDescription = ref<string>(props.modelValue.metaDescription || '')
+const productMetaTitle = ref<string>('')
+const productMetaH1 = ref<string>('')
+const productMetaKeyword = ref<string>('')
+const productMetaDescription = ref<string>('')
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    productMetaTitle.value = newValue.metaTitle || ''
+    productMetaH1.value = newValue.metaH1 || ''
+    productMetaKeyword.value = newValue.metaKeyword || ''
+    productMetaDescription.value = newValue.metaDescription || ''
+  },
+  { immediate: true },
+)
 
 watch([productMetaTitle, productMetaH1, productMetaKeyword, productMetaDescription], () => {
   emit('update:modelValue', {

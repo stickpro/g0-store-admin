@@ -40,7 +40,7 @@
             draggable="true"
             @dragstart="() => (dragIndex = idx)"
             @dragover.prevent="onDragOver(idx)"
-            @drop.prevent="onDrop(idx)"
+            @drop.prevent="onDrop"
             :initial="{ opacity: 0, scaleX: 0 }"
             :animate="{ opacity: 1, scaleX: 1 }"
             class="relative z-40 mx-auto gap-1 flex w-full flex-row items-start justify-start overflow-hidden rounded-md bg-white p-4 shadow-sm dark:bg-neutral-900"
