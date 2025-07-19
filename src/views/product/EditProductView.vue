@@ -2,7 +2,7 @@
 import { CornerUpLeft, PlusCircle, Trash2 } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import ProductForm from '@/components/product/ProductForm.vue'
@@ -21,15 +21,64 @@ import {
   NumberFieldInput,
 } from '@/components/ui/number-field'
 import { useToast } from '@/components/ui/toast/use-toast'
+import MediaService from '@/services/MediaService'
 import { useProductStore } from '@/stores/product'
+import type { MediumResponse, UpdateProductRequest } from '@/utils/types/api/generatedApiGo'
 
 const router = useRouter()
 const route = useRoute()
 const { toast } = useToast()
 
 const productStore = useProductStore()
-const { getProductsWithMedium } = productStore
+const { getProductsWithMedium, updateProduct } = productStore
 const { currentProduct, currentProductMedium } = storeToRefs(productStore)
+
+const files = ref([])
+const loadFile = async () => {
+  const uploads = files.value.map((file) => MediaService.uploadFile(file))
+  const uploadedFiles = await Promise.all(uploads)
+  return uploadedFiles
+}
+const handleFilesChange = (newFiles: any) => {
+  files.value = newFiles
+}
+
+const updateAll = async () => {
+  let uploadedFiles: MediumResponse[] = []
+
+  try {
+    uploadedFiles = await loadFile()
+
+    const updateResquest: UpdateProductRequest = {
+      ...currentProduct.value,
+      manufacturer_id: undefined, // todo make normal omitempty
+      media_ids: [],
+    }
+
+    updateResquest.media_ids = currentProductMedium.value
+      .map((file) => file.id)
+      .filter((id): id is string => typeof id === 'string')
+
+    if (uploadedFiles.length > 0) {
+      const mediaIDs = uploadedFiles
+        .map((file) => file.id)
+        .filter((id): id is string => typeof id === 'string')
+      updateResquest.media_ids.push(...mediaIDs)
+    }
+
+    await updateProduct(updateResquest)
+    await router.push({ name: 'product' })
+  } catch (error) {
+    await Promise.all(
+      uploadedFiles
+        .map((file) => file.id)
+        .filter((id): id is string => typeof id === 'string')
+        .map((id) => MediaService.deleteFile(id)),
+    )
+
+    console.error('Ошибка при сохранении продукта:', error)
+  }
+}
 
 const uuid = typeof route.params.id === 'string' ? route.params.id : ''
 
@@ -66,24 +115,28 @@ onMounted(async () => {
         >
           <CornerUpLeft class="h-3.5 w-3.5" />
         </Button>
-        <span class="text-2xl font-semibold sr-only sm:not-sr-only sm:whitespace-nowrap">
+        <div class="text-2xl sr-only sm:not-sr-only sm:whitespace-nowrap">
           Редактирование Товара
-        </span>
+          <span class="text-3xl font-semibold">{{ currentProduct?.name }} </span>
+        </div>
       </div>
-      <Button size="sm" class="h-7 gap-1">
+      <Button size="sm" class="h-7 gap-1" @click="updateAll()">
         <PlusCircle class="h-3.5 w-3.5" />
         <span class="sr-only sm:not-sr-only sm:whitespace-nowrap"> Обновить </span>
       </Button>
     </div>
   </div>
-  <main class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 sm:px-6 sm:py-0 md:gap-8">
+  <main
+    class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-4 sm:px-6 sm:py-0 md:gap-8"
+    v-if="currentProduct"
+  >
     <div class="col-span-2 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Product info</CardTitle>
         </CardHeader>
         <CardContent>
-          <ProductForm v-if="currentProduct" v-model="currentProduct" />
+          <ProductForm v-model="currentProduct" />
         </CardContent>
       </Card>
       <Card>
@@ -91,7 +144,7 @@ onMounted(async () => {
           <CardTitle>Meta information</CardTitle>
         </CardHeader>
         <CardContent>
-          <ProductMetaForm v-if="currentProduct" v-model="currentProduct" />
+          <ProductMetaForm v-model="currentProduct" />
         </CardContent>
       </Card>
       <Card>
@@ -99,7 +152,7 @@ onMounted(async () => {
           <CardTitle>Identifier</CardTitle>
         </CardHeader>
         <CardContent>
-          <ProductIdentifierForm v-if="currentProduct" v-model="currentProduct" />
+          <ProductIdentifierForm v-model="currentProduct" />
         </CardContent>
       </Card>
     </div>
@@ -109,7 +162,7 @@ onMounted(async () => {
           <CardTitle>Addition Info</CardTitle>
         </CardHeader>
         <CardContent>
-          <NumberField v-if="currentProduct" v-model="currentProduct.sort_order">
+          <NumberField v-model="currentProduct.sort_order">
             <Label>Sort order</Label>
             <NumberFieldContent>
               <NumberFieldDecrement />
@@ -129,19 +182,52 @@ onMounted(async () => {
           <p class="text-sm text-muted-foreground">Product status show product on catalog</p>
         </div>
         <div>
-          <Switch v-if="currentProduct" v-model="currentProduct.is_enable" />
+          <Switch v-model="currentProduct.is_enable" />
         </div>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Image Category</CardTitle>
+          <CardTitle>Image Product</CardTitle>
         </CardHeader>
         <CardContent>
           <FileUploaded v-model="currentProductMedium" />
           <FileUpload
+            @onChange="handleFilesChange"
             class="rounded-lg border border-dashed border-neutral-200 dark:border-neutral-800"
           >
+            <FileUploadGrid />
           </FileUpload>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Price</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <NumberField v-model="currentProduct.price">
+            <Label>Price</Label>
+            <NumberFieldContent>
+              <NumberFieldDecrement />
+              <NumberFieldInput />
+              <NumberFieldIncrement />
+            </NumberFieldContent>
+          </NumberField>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Stocks</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProductStockForm v-model="currentProduct" />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Phisical Attribute</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ProductPhysicalAttribute v-model="currentProduct" />
         </CardContent>
       </Card>
     </div>

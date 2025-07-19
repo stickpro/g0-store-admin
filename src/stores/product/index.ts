@@ -99,14 +99,14 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const updateProduct = async (uuid: string, request: UpdateProductRequest): Promise<void> => {
-    if (!currentProduct.value) {
-      throw new Error('No current product')
+  const updateProduct = async (request: UpdateProductRequest): Promise<void> => {
+    if (!currentProduct.value?.id) {
+      throw new Error('No product selected for update')
     }
 
     try {
       isLoading.value = true
-      await ProductService.updateApiProduct(uuid, request)
+      await ProductService.updateApiProduct(currentProduct.value.id, request)
       toast({
         title: '✅ Success update',
         variant: 'success',

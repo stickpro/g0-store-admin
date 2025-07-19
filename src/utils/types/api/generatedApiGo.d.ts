@@ -472,6 +472,7 @@ export interface UpdateProductRequest {
   length?: number
   location?: string
   manufacturer_id?: string
+  media_ids?: string[]
   meta_description?: string
   meta_h1?: string
   meta_keyword?: string
